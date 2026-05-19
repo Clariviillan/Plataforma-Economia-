@@ -1,0 +1,2394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroEnlace B2B - Conexión Directa y Trazable</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        agrogreen: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        agroearth: {
+                            100: '#f5ebe0',
+                            600: '#8d5b4c',
+                            700: '#734a3e',
+                            800: '#5a3a30',
+                            900: '#432b24',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons (Para iconos vectoriales modernos) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen flex flex-col">
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo & Brand -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="changeTab('inicio')">
+                    <div class="bg-agrogreen-700 text-white p-2.5 rounded-xl shadow-md shadow-agrogreen-700/20">
+                        <i data-lucide="sprout" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-extrabold text-agrogreen-900 tracking-tight flex items-center gap-1.5">
+                            AGRO<span class="text-agroearth-700 font-medium">ENLACE</span>
+                            <span class="text-xs bg-agrogreen-100 text-agrogreen-800 font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">B2B</span>
+                        </span>
+                        <p class="text-[10px] text-gray-500 font-medium tracking-wide uppercase">Baja California & Sonora Directo</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1 lg:space-x-2">
+                    <button onclick="changeTab('inicio')" id="nav-inicio" class="px-3.5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 text-agrogreen-800 bg-agrogreen-50">
+                        <i data-lucide="home" class="w-4 h-4"></i> Inicio
+                    </button>
+                    <button onclick="changeTab('catalogo')" id="nav-catalogo" class="px-3.5 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-agrogreen-800 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2">
+                        <i data-lucide="search" class="w-4 h-4"></i> Catálogo B2B
+                    </button>
+                    <button onclick="changeTab('productores')" id="nav-productores" class="px-3.5 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-agrogreen-800 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2">
+                        <i data-lucide="users" class="w-4 h-4"></i> Productores
+                    </button>
+                    <button onclick="changeTab('transacciones')" id="nav-transacciones" class="px-3.5 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-agrogreen-800 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2">
+                        <i data-lucide="history" class="w-4 h-4"></i> Historial Comercial
+                    </button>
+                    <button onclick="changeTab('panel-roles')" id="nav-panel-roles" class="px-3.5 py-2 rounded-lg text-sm font-semibold bg-agroearth-100 text-agroearth-800 hover:bg-agroearth-600 hover:text-white transition-all duration-200 flex items-center gap-2">
+                        <i data-lucide="user-cog" class="w-4 h-4"></i> Simulador Roles
+                    </button>
+                </nav>
+
+                <!-- Active Role Indicator -->
+                <div class="flex items-center gap-3">
+                    <div id="role-badge" class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 bg-gray-50 text-xs font-semibold text-gray-700">
+                        <span class="w-2 h-2 rounded-full bg-gray-400 animate-pulse" id="role-dot"></span>
+                        <span id="role-text">Comercio (Visitante)</span>
+                    </div>
+                    <!-- Menu Movil Trigger -->
+                    <button class="md:hidden p-2 rounded-lg hover:bg-gray-100 text-gray-600" onclick="toggleMobileMenu()">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 bg-white px-4 py-3 space-y-2">
+            <button onclick="changeTab('inicio'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold text-agrogreen-800 bg-agrogreen-50 flex items-center gap-2">
+                <i data-lucide="home" class="w-4 h-4"></i> Inicio
+            </button>
+            <button onclick="changeTab('catalogo'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <i data-lucide="search" class="w-4 h-4"></i> Catálogo B2B
+            </button>
+            <button onclick="changeTab('productores'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <i data-lucide="users" class="w-4 h-4"></i> Productores
+            </button>
+            <button onclick="changeTab('transacciones'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2">
+                <i data-lucide="history" class="w-4 h-4"></i> Historial Comercial
+            </button>
+            <button onclick="changeTab('panel-roles'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-semibold bg-agroearth-100 text-agroearth-800 flex items-center gap-2">
+                <i data-lucide="user-cog" class="w-4 h-4"></i> Simulador Roles
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN WRAPPER -->
+    <main class="flex-grow">
+
+        <!-- TAB: INICIO (Navegación principal por región) -->
+        <section id="tab-inicio" class="block animate-fadeIn">
+            <!-- Hero Banner -->
+            <div class="relative bg-gradient-to-r from-agrogreen-900 to-agroearth-900 text-white overflow-hidden py-16 md:py-24">
+                <div class="absolute inset-0 opacity-15 mix-blend-overlay bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1500937386664-56d15943747d?auto=format&fit=crop&q=80&w=1200');"></div>
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="max-w-3xl">
+                        <div class="inline-flex items-center gap-2 bg-agrogreen-800/80 border border-agrogreen-600/50 rounded-full px-4 py-1.5 mb-6">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-agrogreen-400"></i>
+                            <span class="text-xs font-bold uppercase tracking-wider text-agrogreen-200">Plataforma de Confianza B2B</span>
+                        </div>
+                        <h1 class="text-3xl md:text-5xl lg:text-6xl font-black tracking-tight leading-none mb-6">
+                            Conexión Agroalimentaria Directa y <span class="text-agrogreen-400">100% Trazable</span>
+                        </h1>
+                        <p class="text-base md:text-xl text-gray-200 font-medium mb-8 leading-relaxed">
+                            Vinculamos de forma transparente a comercios y cadenas alimenticias con productores verificados de Baja California y Sonora. Sin intermediarios, con total respaldo de origen.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <button onclick="changeTab('catalogo')" class="bg-agrogreen-600 hover:bg-agrogreen-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition-all duration-200 flex items-center justify-center gap-2">
+                                <i data-lucide="search" class="w-5 h-5"></i> Explorar Catálogo B2B
+                            </button>
+                            <button onclick="changeTab('panel-roles')" class="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 backdrop-blur-xs">
+                                <i data-lucide="user-plus" class="w-5 h-5"></i> Registrarse como Productor
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN: DIVISIÓN PRINCIPAL POR REGIÓN -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-agrogreen-700 text-xs font-bold tracking-widest uppercase">Navegación Territorial</span>
+                    <h2 class="text-3xl font-extrabold text-gray-900 mt-2">Selecciona la Región de Origen</h2>
+                    <p class="text-gray-500 mt-3">Filtra la oferta agroalimentaria local de los dos estados líderes del noroeste mexicano.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- REGION CARD: BAJA CALIFORNIA -->
+                    <div class="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer" onclick="seleccionarRegion('Baja California')">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&q=80&w=800" alt="Baja California" class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1500937386664-56d15943747d?auto=format&fit=crop&q=80&w=800'">
+                        
+                        <div class="absolute bottom-0 left-0 right-0 p-8 z-20">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md">Región Pacífico-Desierto</span>
+                                <span class="bg-white/20 text-white text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-md backdrop-blur-xs">Valles y Costa</span>
+                            </div>
+                            <h3 class="text-2xl font-black text-white">Baja California</h3>
+                            <p class="text-gray-200 text-sm mt-2 font-light">
+                                Reconocida por su agricultura en el Valle de Mexicali, horticultura orgánica en el Valle de San Quintín y producción vitivinícola e industrial de alta calidad.
+                            </p>
+                            <div class="mt-5 inline-flex items-center gap-2 text-agrogreen-400 font-bold text-sm group-hover:text-agrogreen-300 transition-colors">
+                                Ver Catálogo de Baja California <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- REGION CARD: SONORA -->
+                    <div class="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer" onclick="seleccionarRegion('Sonora')">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent z-10"></div>
+                        <img src="https://images.unsplash.com/photo-1595974482597-4b8da8879bc5?auto=format&fit=crop&q=80&w=800" alt="Sonora" class="w-full h-80 object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1500937386664-56d15943747d?auto=format&fit=crop&q=80&w=800'">
+                        
+                        <div class="absolute bottom-0 left-0 right-0 p-8 z-20">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="bg-amber-600 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md">Granero de México</span>
+                                <span class="bg-white/20 text-white text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-md backdrop-blur-xs">Valles Yaqui y Mayo</span>
+                            </div>
+                            <h3 class="text-2xl font-black text-white">Sonora</h3>
+                            <p class="text-gray-200 text-sm mt-2 font-light">
+                                Potencia agropecuaria, líder en granos comestibles, hortalizas de exportación, ganadería bovina de excelencia y productos cítricos y cárnicos certificados.
+                            </p>
+                            <div class="mt-5 inline-flex items-center gap-2 text-agrogreen-400 font-bold text-sm group-hover:text-agrogreen-300 transition-colors">
+                                Ver Catálogo de Sonora <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INFO DE VALOR: TRAZABILIDAD Y VERIFICACIÓN -->
+                <div class="mt-20 bg-agroearth-100/50 border border-agroearth-100 rounded-2xl p-8 md:p-12">
+                    <div class="grid md:grid-cols-3 gap-8">
+                        <div class="flex gap-4">
+                            <div class="bg-agrogreen-700 text-white p-3 rounded-xl h-fit shadow-md">
+                                <i data-lucide="shield-check" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-agrogreen-900">1. Productores Verificados</h4>
+                                <p class="text-gray-600 text-sm mt-1.5">Cada agro-empresario pasa por una auditoría de documentos fiscales, de propiedad y certificaciones sanitarias antes de ser publicado en el catálogo.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="bg-agrogreen-700 text-white p-3 rounded-xl h-fit shadow-md">
+                                <i data-lucide="qr-code" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-agrogreen-900">2. Ficha de Trazabilidad</h4>
+                                <p class="text-gray-600 text-sm mt-1.5">Consulte el lote exacto de cada producto, fecha de cosecha, prácticas de cultivo, análisis de laboratorio y trayecto geográfico del alimento.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="bg-agrogreen-700 text-white p-3 rounded-xl h-fit shadow-md">
+                                <i data-lucide="shake-hands" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-bold text-agrogreen-900">3. Comercio Seguro & Directo</h4>
+                                <p class="text-gray-600 text-sm mt-1.5">Negocie precios de mayoreo directamente desde la plataforma. El historial de transacciones valida el nivel de cumplimiento de ambas partes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: CATALOGO (Vista de productos filtrables) -->
+        <section id="tab-catalogo" class="hidden animate-fadeIn py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Page Title -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                    <div>
+                        <span class="text-agrogreen-700 text-xs font-bold tracking-widest uppercase">CATÁLOGO B2B INSTITUCIONAL</span>
+                        <h2 class="text-3xl font-extrabold text-gray-950 mt-1">Oferta Agroalimentaria Disponible</h2>
+                        <p class="text-gray-500 text-sm mt-1">Conexión directa con precios reales actualizados y lotes con trazabilidad técnica registrada.</p>
+                    </div>
+                    <!-- Stats summary -->
+                    <div class="flex items-center gap-4 text-xs font-medium text-gray-500">
+                        <span class="bg-white border px-3 py-1.5 rounded-lg"><strong class="text-agrogreen-700" id="total-productos-count">0</strong> Productos</span>
+                        <span class="bg-white border px-3 py-1.5 rounded-lg"><strong class="text-agrogreen-700">100%</strong> Productores Verificados</span>
+                    </div>
+                </div>
+
+                <div class="grid lg:grid-cols-4 gap-8">
+                    <!-- SIDEBAR FILTERS -->
+                    <div class="space-y-6">
+                        <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-xs sticky top-28">
+                            <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+                                <h3 class="font-bold text-gray-950 flex items-center gap-2">
+                                    <i data-lucide="sliders-horizontal" class="w-4 h-4 text-agrogreen-700"></i> Filtros de Selección
+                                </h3>
+                                <button onclick="resetearFiltros()" class="text-xs text-agrogreen-700 hover:text-agrogreen-900 font-semibold underline">Limpiar</button>
+                            </div>
+
+                            <!-- Filter: Región -->
+                            <div class="py-4 border-b border-gray-100">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">Región Geográfica</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="radio" name="filtro-region" value="todos" checked onchange="aplicarFiltros()" class="w-4 h-4 text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Ambas Regiones</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="radio" name="filtro-region" value="Baja California" id="radio-baja" onchange="aplicarFiltros()" class="w-4 h-4 text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Baja California</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="radio" name="filtro-region" value="Sonora" id="radio-sonora" onchange="aplicarFiltros()" class="w-4 h-4 text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Sonora</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Filter: Categoría de Alimento (ESTÁTICO PARA MÁXIMA ROBUSTEZ Y VISIBILIDAD) -->
+                            <div class="py-4 border-b border-gray-100">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">Categoría de Alimento</label>
+                                <div class="space-y-2" id="filtro-categorias-container">
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Frutas" onchange="aplicarFiltros()" class="filtro-categoria-checkbox rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Frutas</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Verduras y hortalizas" onchange="aplicarFiltros()" class="filtro-categoria-checkbox rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Verduras y hortalizas</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Granos y legumbres" onchange="aplicarFiltros()" class="filtro-categoria-checkbox rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Granos y legumbres</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Lácteos" onchange="aplicarFiltros()" class="filtro-categoria-checkbox rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Lácteos</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Carnes y derivados" onchange="aplicarFiltros()" class="filtro-categoria-checkbox rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Carnes y derivados</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Miel y derivados" onchange="aplicarFiltros()" class="filtro-categoria-checkbox rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Miel y derivados</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Productos artesanales" onchange="aplicarFiltros()" class="filtro-categoria-checkbox rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span>Productos artesanales</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Filter: Práctica Productiva (Transversal) -->
+                            <div class="py-4">
+                                <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2.5">Práctica de Cultivo/Crianza</label>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Orgánica" onchange="aplicarFiltros()" class="filtro-practica rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span class="bg-emerald-50 text-emerald-700 text-xs px-2 py-0.5 rounded font-medium border border-emerald-100">Orgánica</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Ecológica" onchange="aplicarFiltros()" class="filtro-practica rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span class="bg-teal-50 text-teal-700 text-xs px-2 py-0.5 rounded font-medium border border-teal-100">Ecológica</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Ganadería Regenerativa" onchange="aplicarFiltros()" class="filtro-practica rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span class="bg-amber-50 text-amber-700 text-xs px-2 py-0.5 rounded font-medium border border-amber-100">Regenerativa</span>
+                                    </label>
+                                    <label class="flex items-center gap-2.5 text-sm cursor-pointer text-gray-700 hover:text-gray-900">
+                                        <input type="checkbox" value="Tradicional Sostenible" onchange="aplicarFiltros()" class="filtro-practica rounded text-agrogreen-600 focus:ring-agrogreen-500 border-gray-300">
+                                        <span class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded font-medium border border-blue-100">Sostenible</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PRODUCTS LIST -->
+                    <div class="lg:col-span-3">
+                        <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6" id="productos-grid">
+                            <!-- Inyectado Dinámicamente -->
+                        </div>
+                        <div id="no-products-message" class="hidden text-center py-20 bg-white border border-gray-200 rounded-2xl">
+                            <i data-lucide="info" class="w-12 h-12 text-gray-300 mx-auto mb-4"></i>
+                            <h3 class="text-lg font-bold text-gray-800">No se encontraron productos</h3>
+                            <p class="text-gray-500 text-sm mt-1">Prueba seleccionando otra combinación de filtros de región, categoría o prácticas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: PRODUCTORES (Directorio de Productores Verificados) -->
+        <section id="tab-productores" class="hidden animate-fadeIn py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mb-12">
+                    <span class="text-agrogreen-700 text-xs font-bold tracking-widest uppercase">Directorio Institucional</span>
+                    <h2 class="text-3xl font-extrabold text-gray-950 mt-1">Productores Agroalimentarios Verificados</h2>
+                    <p class="text-gray-500 mt-2">La administración audita exhaustivamente los antecedentes legales, sanitarios y de tenencia de la tierra de cada agro-empresario.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="productores-grid">
+                    <!-- Inyectado Dinámicamente -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: DETALLE DE PRODUCTOR -->
+        <section id="tab-detalle-productor" class="hidden animate-fadeIn py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="detalle-productor-content">
+                <!-- Se rellena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- TAB: DETALLE DE PRODUCTO Y TRAZABILIDAD -->
+        <section id="tab-detalle-producto" class="hidden animate-fadeIn py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="detalle-producto-content">
+                <!-- Se rellena dinámicamente -->
+            </div>
+        </section>
+
+        <!-- TAB: HISTORIAL DE TRANSACCIONES -->
+        <section id="tab-transacciones" class="hidden animate-fadeIn py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+                    <div>
+                        <span class="text-agrogreen-700 text-xs font-bold tracking-widest uppercase">Transparencia de Mercado</span>
+                        <h2 class="text-3xl font-extrabold text-gray-950 mt-1">Historial Comercial Reciente</h2>
+                        <p class="text-gray-500 text-sm mt-1">Registro formal y público de las últimas transacciones y relaciones comerciales establecidas en la plataforma para fomento de la confianza colectiva.</p>
+                    </div>
+                    <button onclick="abrirModalRegistrarTransaccion()" class="bg-agrogreen-700 hover:bg-agrogreen-800 text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition-all flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i> Registrar Nueva Transacción
+                    </button>
+                </div>
+
+                <!-- Lista de Transacciones -->
+                <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-gray-50 text-xs font-bold uppercase text-gray-500 border-b border-gray-100">
+                                    <th class="p-4">ID Transacción / Fecha</th>
+                                    <th class="p-4">Comercio Adquirente</th>
+                                    <th class="p-4">Productor Origen</th>
+                                    <th class="p-4">Producto & Lote</th>
+                                    <th class="p-4 text-center">Cantidad</th>
+                                    <th class="p-4 text-right">Monto Total</th>
+                                    <th class="p-4 text-center">Estado de Trazabilidad</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-transacciones-body" class="divide-y divide-gray-100 text-sm text-gray-700">
+                                <!-- Inyectado Dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB: PANEL DE ROLES (SIMULADOR INTERACTIVO) -->
+        <section id="tab-panel-roles" class="hidden animate-fadeIn py-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Explicación -->
+                <div class="bg-gradient-to-r from-agrogreen-800 to-agroearth-800 rounded-2xl p-8 text-white mb-10 shadow-lg">
+                    <h2 class="text-2xl md:text-3xl font-black mb-2">Simulador de Entornos e Interacción</h2>
+                    <p class="text-gray-200 text-sm md:text-base max-w-4xl">
+                        Este prototipo implementa vistas completas para los tres roles clave de la plataforma. Alterna entre ellos para probar cómo registra un productor, cómo valida un administrador institucional y cómo consulta/compra un comercio.
+                    </p>
+                    
+                    <!-- Selectores Rápidos de Rol -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">
+                        <button onclick="cambiarRol('comercio')" id="btn-rol-comercio" class="flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left bg-white text-gray-900 border-white">
+                            <div>
+                                <h4 class="font-bold">1. Comercio</h4>
+                                <p class="text-xs text-gray-500">Consulta y compra</p>
+                            </div>
+                            <span class="bg-agrogreen-100 text-agrogreen-800 text-xs px-2 py-1 rounded font-bold">Activo</span>
+                        </button>
+                        <button onclick="cambiarRol('productor')" id="btn-rol-productor" class="flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left bg-white/10 hover:bg-white/20 border-white/10 text-white">
+                            <div>
+                                <h4 class="font-bold">2. Productor</h4>
+                                <p class="text-xs text-gray-300">Registra productos y lotes</p>
+                            </div>
+                            <span class="bg-white/10 text-white text-xs px-2 py-1 rounded font-semibold">Cambiar</span>
+                        </button>
+                        <button onclick="cambiarRol('administrador')" id="btn-rol-administrador" class="flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left bg-white/10 hover:bg-white/20 border-white/10 text-white">
+                            <div>
+                                <h4 class="font-bold">3. Administrador</h4>
+                                <p class="text-xs text-gray-300">Valida Trazabilidad</p>
+                            </div>
+                            <span class="bg-white/10 text-white text-xs px-2 py-1 rounded font-semibold">Cambiar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SUB-PANELES SEGÚN EL ROL SELECCIONADO -->
+
+                <!-- 1. PANEL PRODUCTOR (Formulario de registro) -->
+                <div id="panel-productor-vista" class="hidden space-y-8 animate-fadeIn">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-xs">
+                        <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
+                            <div class="bg-orange-100 text-orange-700 p-2 rounded-lg">
+                                <i data-lucide="plus-square" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Registrar un Nuevo Producto / Lote</h3>
+                                <p class="text-gray-500 text-xs">Formulario formal para productores autorizados. Su publicación queda pendiente hasta la validación del Administrador.</p>
+                            </div>
+                        </div>
+
+                        <form id="form-registrar-producto" onsubmit="guardarNuevoProducto(event)" class="space-y-6">
+                            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Selecciona tu Perfil de Productor</label>
+                                    <select id="prod-form-productor" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-agrogreen-500 focus:border-agrogreen-500" required>
+                                        <!-- Inyectado Dinámicamente -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Nombre Comercial del Alimento</label>
+                                    <input type="text" id="prod-form-nombre" placeholder="Ej. Tomate Bola de San Quintín" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-agrogreen-500 focus:border-agrogreen-500" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Categoría del Alimento</label>
+                                    <select id="prod-form-categoria" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-agrogreen-500 focus:border-agrogreen-500" required>
+                                        <!-- Inyectado Dinámicamente -->
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Costo (B2B Mayorista por Unidad)</label>
+                                    <input type="text" id="prod-form-costo" placeholder="Ej. $18.50 por kg (Mín. 500 kg)" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-agrogreen-500 focus:border-agrogreen-500" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Disponibilidad Inmediata</label>
+                                    <input type="text" id="prod-form-disponibilidad" placeholder="Ej. 12 Toneladas" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-agrogreen-500 focus:border-agrogreen-500" required>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Práctica Productiva Empleada</label>
+                                    <select id="prod-form-practica" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-agrogreen-500 focus:border-agrogreen-500" required>
+                                        <option value="Orgánica">Orgánica Certificada</option>
+                                        <option value="Ecológica">Agroecológica (Sin agroquímicos)</option>
+                                        <option value="Ganadería Regenerativa">Ganadería Regenerativa</option>
+                                        <option value="Tradicional Sostenible">Tradicional Sostenible</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Proceso Productivo / Descripción de Práctica</label>
+                                    <textarea id="prod-form-proceso" rows="3" placeholder="Describe detalladamente cómo fue cultivado o procesado este lote..." class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-agrogreen-500 focus:border-agrogreen-500" required></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Fotografía del Producto (URL de imagen o simular)</label>
+                                    <input type="text" id="prod-form-imagen" value="https://images.unsplash.com/photo-1595855759920-86582396756a?auto=format&fit=crop&q=80&w=600" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-agrogreen-500 focus:border-agrogreen-500" required>
+                                    <span class="text-[10px] text-gray-400">Proporcionamos una imagen estándar de campo por defecto.</span>
+                                </div>
+                            </div>
+
+                            <!-- SECCIÓN: FICHA TÉCNICA DE LOTE DE COSECHA (TRAZABILIDAD OBLIGATORIA) -->
+                            <div class="bg-gray-50 border border-gray-200 rounded-xl p-6">
+                                <h4 class="font-bold text-gray-900 flex items-center gap-2 mb-4">
+                                    <i data-lucide="qr-code" class="w-5 h-5 text-agroearth-700"></i> Registro de Trazabilidad Técnica (Datos de Lote)
+                                </h4>
+                                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1.5">ID Lote Único (Generado)</label>
+                                        <input type="text" id="prod-form-lote-id" readonly class="w-full bg-gray-200 border border-gray-300 rounded-lg p-2 text-sm text-gray-600 font-mono font-semibold">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1.5">Fecha de Cosecha / Producción</label>
+                                        <input type="date" id="prod-form-fecha" class="w-full bg-white border border-gray-300 rounded-lg p-2 text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1.5">Ubicación de Parcela (Geo-Coord)</label>
+                                        <input type="text" id="prod-form-coords" placeholder="Ej. 30.5283° N, 115.9324° W" class="w-full bg-white border border-gray-300 rounded-lg p-2 text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-bold text-gray-600 uppercase mb-1.5">Certificado Adjunto (Evidencia)</label>
+                                        <select id="prod-form-certificado-tipo" class="w-full bg-white border border-gray-300 rounded-lg p-2 text-sm">
+                                            <option value="SENASICA / USDA Organic">SENASICA - Buenas Prácticas Agrícolas</option>
+                                            <option value="Certificación Orgánica Mexicana">Certificación Orgánica Mexicana</option>
+                                            <option value="Certificado de Inocuidad Alimentaria">Certificado de Inocuidad Alimentaria</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                                <button type="button" onclick="resetearFormularioProducto()" class="px-5 py-2.5 rounded-lg border text-sm font-semibold text-gray-500 hover:bg-gray-50">Limpiar Datos</button>
+                                <button type="submit" class="bg-agrogreen-700 hover:bg-agrogreen-800 text-white font-semibold text-sm px-6 py-2.5 rounded-lg transition-all flex items-center gap-2">
+                                    <i data-lucide="check-circle" class="w-4 h-4"></i> Guardar y Enviar a Validación
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- 2. PANEL ADMINISTRADOR (Validación de Productos) -->
+                <div id="panel-admin-vista" class="hidden space-y-8 animate-fadeIn">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-xs">
+                        <div class="flex items-center justify-between border-b border-gray-100 pb-4 mb-6">
+                            <div class="flex items-center gap-3">
+                                <div class="bg-red-100 text-red-700 p-2 rounded-lg">
+                                    <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-900">Validación de Datos del Productor</h3>
+                                    <p class="text-gray-500 text-xs">Módulo institucional. Aprueba o rechaza productos y sus datos de trazabilidad técnica antes de ser publicados al catálogo B2B.</p>
+                                </div>
+                            </div>
+                            <span class="bg-red-50 text-red-700 text-xs px-3 py-1.5 rounded-full font-bold border border-red-100 flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span> Panel Auditor
+                            </span>
+                        </div>
+
+                        <!-- Lista de productos pendientes -->
+                        <div class="space-y-4">
+                            <h4 class="font-bold text-gray-800 text-sm uppercase tracking-wider">Productos pendientes de auditoría institucional:</h4>
+                            <div class="space-y-4" id="lista-pendientes-admin">
+                                <!-- Inyectado Dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. PANEL COMERCIO (Buzón de Negociaciones) -->
+                <div id="panel-comercio-vista" class="space-y-8 animate-fadeIn">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-xs">
+                        <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
+                            <div class="bg-blue-100 text-blue-700 p-2 rounded-lg">
+                                <i data-lucide="message-square" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">Mensajes de Negociación Directa (Comercio / Productor)</h3>
+                                <p class="text-gray-500 text-xs">Consulta las solicitudes de cotización directa enviadas desde las fichas de los productos para eliminar intermediación comercial.</p>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4" id="buzon-negociaciones">
+                            <!-- Inyectado Dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER INSTITUCIONAL -->
+    <footer class="bg-gray-900 text-gray-300 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid md:grid-cols-4 gap-8">
+                <!-- Branding -->
+                <div class="md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-agrogreen-700 text-white p-2 rounded-xl">
+                            <i data-lucide="sprout" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-lg font-extrabold text-white tracking-tight">
+                            AGRO<span class="text-agrogreen-400 font-medium">ENLACE</span> B2B
+                        </span>
+                    </div>
+                    <p class="text-sm text-gray-400 max-w-sm">
+                        Plataforma oficial para la vinculación transparente, trazabilidad técnica y fomento al comercio local del sector agroalimentario en Baja California y Sonora.
+                    </p>
+                    <div class="mt-6 flex items-center gap-2">
+                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">Servicio en Línea Organizado</span>
+                    </div>
+                </div>
+
+                <!-- Enlaces Rápidos -->
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Secciones</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li><a href="#" onclick="changeTab('inicio')" class="hover:text-white transition-colors">Inicio Territorial</a></li>
+                        <li><a href="#" onclick="changeTab('catalogo')" class="hover:text-white transition-colors">Catálogo de Oferta</a></li>
+                        <li><a href="#" onclick="changeTab('productores')" class="hover:text-white transition-colors">Directorio de Productores</a></li>
+                        <li><a href="#" onclick="changeTab('transacciones')" class="hover:text-white transition-colors">Historial de Transacciones</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contacto & Leyendas -->
+                <div>
+                    <h4 class="text-white font-bold text-sm uppercase tracking-wider mb-4">Confianza Institucional</h4>
+                    <ul class="space-y-2 text-sm text-gray-400">
+                        <li class="flex items-center gap-2"><i data-lucide="shield-check" class="w-4 h-4 text-agrogreen-400"></i> Auditado por Secretaría Agraria</li>
+                        <li class="flex items-center gap-2"><i data-lucide="qr-code" class="w-4 h-4 text-agrogreen-400"></i> Fichas COFEPRIS / USDA</li>
+                        <li class="flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4 text-agrogreen-400"></i> Servidor Encriptado SSL</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-xs text-gray-500 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p>&copy; 2026 AgroEnlace B2B Baja-Sonora. Todos los derechos reservados. Comercio Directo sin Intermediarios.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="hover:text-white transition-colors">Políticas de Privacidad</a>
+                    <a href="#" class="hover:text-white transition-colors">Términos de Uso B2B</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL: REGISTRAR TRANSACCIÓN COMERCIAL -->
+    <div id="modal-transaccion" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+        <!-- Overlay -->
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-xs" onclick="cerrarModalRegistrarTransaccion()"></div>
+        <!-- Contenedor -->
+        <div class="bg-white rounded-2xl max-w-xl w-full p-6 relative z-10 border border-gray-200 shadow-2xl animate-scaleUp max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-100 mb-6">
+                <h3 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                    <i data-lucide="file-plus" class="w-5 h-5 text-agrogreen-700"></i> Registrar Nueva Relación Comercial
+                </h3>
+                <button onclick="cerrarModalRegistrarTransaccion()" class="p-1 rounded-lg hover:bg-gray-100 text-gray-400">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="form-transaccion" onsubmit="guardarTransaccion(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Comercio Adquirente</label>
+                    <input type="text" id="trans-comercio" placeholder="Ej. Soriana Baja California S.A. de C.V." class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Selecciona el Productor de Origen</label>
+                    <select id="trans-productor" onchange="actualizarProductosEnFormTransaccion()" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm" required>
+                        <!-- Inyectado dinámicamente -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Selecciona el Producto Adquirido</label>
+                    <select id="trans-producto" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm" required>
+                        <!-- Inyectado dinámicamente -->
+                    </select>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Cantidad Adquirida</label>
+                        <input type="text" id="trans-cantidad" placeholder="Ej. 1.5 Toneladas" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Monto Total de Transacción</label>
+                        <input type="text" id="trans-monto" placeholder="Ej. $27,750 MXN" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Evidencia de Operación (Documento / Factura de compra)</label>
+                    <select id="trans-evidencia" class="w-full bg-gray-50 border border-gray-300 rounded-lg p-2 text-sm">
+                        <option value="Factura Digital validada por SAT">Factura Digital CFDI de Producción Agropecuaria</option>
+                        <option value="Contrato de Suministro Directo 2026">Contrato de Suministro Directo de Ciclo</option>
+                        <option value="Guía de Tránsito Fitosanitario">Guía de Tránsito Fitosanitario Federal</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button type="button" onclick="cerrarModalRegistrarTransaccion()" class="px-4 py-2 rounded-lg border text-sm font-semibold text-gray-500 hover:bg-gray-50">Cancelar</button>
+                    <button type="submit" class="bg-agrogreen-700 hover:bg-agrogreen-800 text-white font-semibold text-sm px-5 py-2 rounded-lg transition-all">
+                        Registrar Transacción
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT: MODELO DE DATOS Y LÓGICA DE INTERFAZ -->
+    <script>
+        // --- 1) BASE DE DATOS INICIAL SIMULADA (EN MEMORIA) ---
+        let productores = [
+            {
+                id: "p1",
+                nombre: "Rancho San Vicente",
+                comunidad: "Valle de San Quintín, Baja California",
+                historia: "Establecido en 2012, Rancho San Vicente nació con la misión de transformar la agricultura costera en Baja California. Sus fundadores, la familia González, implementaron sistemas de fertirriego por goteo con desalinización solar, reduciendo el consumo hídrico en un 40%.",
+                certificaciones: ["SENASICA Buenas Prácticas Agrícolas", "USDA Organic Certification", "PrimusGFS Inocuidad"],
+                procesos: "Cultivo a cielo abierto con manejo integrado de plagas, fertilizantes de compostas de algas locales del Pacífico y optimización del agua por goteo computarizado.",
+                contacto: "contacto@ranchosanvicente.baja.mx | Tel: 646-120-4592",
+                verificado: true,
+                imagen: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&q=80&w=300",
+                region: "Baja California"
+            },
+            {
+                id: "p2",
+                nombre: "Cooperativa Apícola Desierto de Altar",
+                comunidad: "Caborca, Sonora",
+                historia: "Conformada por 15 familias apicultoras del desierto de Sonora. Trabajamos activamente en preservar la flora silvestre del mezquite y palo verde, logrando una de las mieles con la menor humedad y sabor más exclusivo de Norteamérica.",
+                certificaciones: ["COFEPRIS Libre de Patógenos", "Certificación Miel Libre de Agroquímicos SADER"],
+                procesos: "Cuidado respetuoso de colmenas en el Desierto de Altar, extracción en frío bajo normas de estricta inocuidad mecánica y envasado en origen sin filtrar térmicamente.",
+                contacto: "alianzas@mielaltar.son.mx | Tel: 637-112-0943",
+                verificado: true,
+                imagen: "https://images.unsplash.com/photo-1613548058193-1cd24c1bebcf?q=80&w=870&auto=format&fit=crop",
+                region: "Sonora"
+            },
+            {
+                id: "p3",
+                nombre: "Lácteos del Valle de Mexicali",
+                comunidad: "Ejido Nuevo León, Baja California",
+                historia: "Tres generaciones dedicadas a la producción de quesos artesanales típicos de Baja California. Nuestras vacas de libre pastoreo consumen alfalfa local de alta calidad del distrito de riego del Río Colorado.",
+                certificaciones: ["Marca Colectiva Baja California Calidad Certificada", "HACCP en Proceso Lácteo"],
+                procesos: "Ordeño automatizado inocuo, pasteurización tradicional a baja temperatura y maduración en cavas controladas de quesos añejos y frescos.",
+                contacto: "ventas@lacteosmexicali.com | Tel: 686-554-1290",
+                verificado: true,
+                imagen: "https://images.unsplash.com/photo-1500595046743-cd271d694d30?auto=format&fit=crop&q=80&w=300",
+                region: "Baja California"
+            },
+            {
+                id: "p4",
+                nombre: "Ganadería Orgánica Yaqui",
+                comunidad: "Vícam, Sonora",
+                historia: "Firme compromiso con la sustentabilidad ganadera en territorio Yaqui. Implementamos el modelo de Ganadería Regenerativa que rota de manera intensiva las parcelas, permitiendo al suelo capturar CO2 y recuperar sus nutrientes de manera natural.",
+                certificaciones: ["Certified Humane de Bienestar Animal", "Estándar Orgánico Mexicano LPO", "TIF 145 Sonora"],
+                procesos: "Pastoreo rotativo intensivo en pastos nativos, sin hormonas de crecimiento, libre de antibióticos preventivos y con fuentes de agua natural auditada.",
+                contacto: "rancho.yaqui@produccion.son.mx | Tel: 644-415-3040",
+                verificado: true,
+                imagen: "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&q=80&w=300",
+                region: "Sonora"
+            },
+            {
+                id: "p5",
+                nombre: "Sociedad Cooperativa Pescadores de Ensenada",
+                comunidad: "Bahía de Todos Santos, Baja California",
+                historia: "Fundada por marineros locales dedicados a la pesca sostenible. Nos especializamos en la captura responsable de especies menores y recolección de macroalgas orgánicas, procesándolas en frío para preservar su calidad biológica y nutricional.",
+                certificaciones: ["SADER Inocuidad Pesquera", "MSC Pesca Sostenible", "FDA Hazard Certified"],
+                procesos: "Captura de anzuelo no destructiva, procesamiento en barcos equipados con tecnología de ultracongelación rápida y enlatado artesanal con aceites orgánicos locales.",
+                contacto: "ventas@pescadoresensenada.coop | Tel: 646-174-8890",
+                verificado: true,
+                imagen: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&q=80&w=300",
+                region: "Baja California"
+            },
+            {
+                id: "p6",
+                nombre: "Viñedos & Olivos del Valle de Guadalupe",
+                comunidad: "Valle de Guadalupe, Baja California",
+                historia: "Dedicados a la olivicultura orgánica desde hace 35 años. Integramos cultivos de uva de mesa y olivo bajo un ecosistema de equilibrio biodinámico que nutre la tierra mediante compostas enriquecidas.",
+                certificaciones: ["USDA Organic", "Certificación de Sustentabilidad del Valle COF"],
+                procesos: "Cosecha manual de aceitunas, molienda inmediata de olivas con molino de piedra tradicional y extracción por centrifugación fría bajo atmósfera controlada.",
+                contacto: "contacto@olivosguadalupe.baja.mx | Tel: 646-155-2241",
+                verificado: true,
+                imagen: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=300",
+                region: "Baja California"
+            },
+            {
+                id: "p7",
+                nombre: "Granos del Valle del Yaqui",
+                comunidad: "Cd. Obregón, Sonora",
+                historia: "Asociación agrícola colectiva que reúne a más de 40 pequeños propietarios de parcelas de riego. Dedicados a reactivar el cultivo tradicional de leguminosas autóctonas de alta demanda de proteína y bajo consumo de nitrógeno.",
+                certificaciones: ["Certificación Nacional de Inocuidad SADER", "Hecho en Sonora S-Premium"],
+                procesos: "Trilla mecánica de precisión, selección fotométrica de granos en planta de acopio y empacado hermético en costales de grado alimenticio.",
+                contacto: "comercial@granosyaqui.org | Tel: 644-411-9033",
+                verificado: true,
+                imagen: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&q=80&w=300",
+                region: "Sonora"
+            },
+            {
+                id: "p8",
+                nombre: "Dátiles Reales de San Luis Río Colorado",
+                comunidad: "San Luis Río Colorado, Sonora",
+                historia: "Establecidos en los límites del desierto sonorense. Aprovechamos el clima extremo de altas temperaturas y el agua pura de deshielo del Río Colorado para cultivar dátiles Premium que gozan de reputación internacional.",
+                certificaciones: ["Certificado Orgánico LPO", "Kosher Certified", "GlobalGAP Exportación"],
+                procesos: "Cosecha manual en altura sobre las palmeras datileras, secado solar pasivo bajo mallas protectoras, lavado por aire presurizado y empacado de selección individual.",
+                contacto: "info@datilesreales.com | Tel: 653-534-7711",
+                verificado: true,
+                imagen: "https://images.unsplash.com/photo-1526318472351-c757bff30e07?auto=format&fit=crop&q=80&w=300",
+                region: "Sonora"
+            }
+        ];
+
+        let categorias = ["Frutas", "Verduras y hortalizas", "Granos y legumbres", "Lácteos", "Carnes y derivados", "Miel y derivados", "Productos artesanales"];
+
+        let productos = [
+            // --- CATEGORÍA 1: FRUTAS ---
+            {
+                id: "pr1",
+                productorId: "p1",
+                nombre: "Fresa Orgánica 'Festival'",
+                categoria: "Frutas",
+                costo: "$45.00 MXN por Clamshell (Mínimo: 500 unidades)",
+                disponibilidad: "4,000 Clamshells semanales",
+                practica: "Orgánica",
+                certificaciones: ["USDA Organic", "GlobalGAP"],
+                proceso: "Cultivo sobre camas cubiertas de acolchado plástico biodegradable, riego por goteo optimizado y control de plagas mediante la introducción de ácaros depredadores.",
+                imagen: "https://images.unsplash.com/photo-1543528176-61b239494933?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-FRE-SQ-2026-11",
+                    cosecha: "2026-05-12",
+                    evidencia: "Estudio microbiológico de agua de riego libre de coliformes.",
+                    coords: "30.4912° N, 115.9541° W (Valle de San Quintín)",
+                    historial: [
+                        { fecha: "2026-05-12", evento: "Recolección manual en cestas de grado alimenticio a primera hora del día." },
+                        { fecha: "2026-05-12", evento: "Control de calidad y empaque en cajas cerradas de exportación." }
+                    ]
+                }
+            },
+            {
+                id: "pr2",
+                productorId: "p8",
+                nombre: "Dátil Medjool de Selección Premium",
+                categoria: "Frutas",
+                costo: "$95.00 MXN por Estuche de 1kg (Caja con 10 estuches)",
+                disponibilidad: "3.5 Toneladas disponibles",
+                practica: "Orgánica",
+                certificaciones: ["Certificación Orgánica Mexicana LPO", "GlobalGAP"],
+                proceso: "Fruto de palmeras datileras aclimatadas al desierto extremo. Cosechados en su punto óptimo de madurez carmelita, secados al sol del desierto y lavados por aspersión libre de cloro.",
+                imagen: "https://images.unsplash.com/photo-1633677491262-0a51b9851f46?q=80&w=870&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-DAT-SLRC-99",
+                    cosecha: "2026-05-01",
+                    evidencia: "Certificado de Inocuidad Fitosanitaria y Libre de Pesticidas SADER",
+                    coords: "32.4215° N, 114.7188° W (San Luis Río Colorado, Sonora)",
+                    historial: [
+                        { fecha: "2026-05-01", evento: "Cosecha manual mediante escalada a palmas datileras." },
+                        { fecha: "2026-05-03", evento: "Selección óptica de humedad y tamaño de fruto en bandas sanitarias." }
+                    ]
+                }
+            },
+            {
+                id: "pr3",
+                productorId: "p6",
+                nombre: "Uva de Mesa Orgánica 'Red Globe'",
+                categoria: "Frutas",
+                costo: "$35.00 MXN por kg (Pedido mínimo: Cajas de 10 kg)",
+                disponibilidad: "2.8 Toneladas listas para embarcar",
+                practica: "Orgánica",
+                certificaciones: ["USDA Organic", "SENASICA Buenas Prácticas"],
+                proceso: "Fruto de parrales biodinámicos del Valle de Guadalupe. Regados con agua de pozo, sin pesticidas y empacados directamente en campo para evitar la manipulación excesiva del fruto.",
+                imagen: "https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-UVA-RG-03",
+                    cosecha: "2026-05-11",
+                    evidencia: "Certificado de inocuidad en parrales libres de agroquímicos sintéticos",
+                    coords: "32.1220° N, 116.5920° W (Valle de Guadalupe, BC)",
+                    historial: [
+                        { fecha: "2026-05-11", evento: "Corte y selección manual en racimos." },
+                        { fecha: "2026-05-11", evento: "Empaque directo en cajas con liner protector e inspección fitosanitaria." }
+                    ]
+                }
+            },
+
+            // --- CATEGORÍA 2: VERDURAS Y HORTALIZAS ---
+            {
+                id: "pr4",
+                productorId: "p1",
+                nombre: "Tomate Saladette de Exportación",
+                categoria: "Verduras y hortalizas",
+                costo: "$18.50 MXN por Kilogramo (Pedido mínimo: 1,000 kg)",
+                disponibilidad: "15 Toneladas listas para embarque semanal",
+                practica: "Orgánica",
+                certificaciones: ["USDA Organic", "SENASICA Inocuidad"],
+                proceso: "Cultivado bajo malla sombra, regado con agua desalinizada de pozo profundo y nutrido exclusivamente con bio-fertilizantes orgánicos y compostas de algas marinas del Pacífico.",
+                imagen: "https://images.unsplash.com/photo-1546094096-0df4bcaaa337?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-TOM-SQ-2026-04",
+                    cosecha: "2026-05-10",
+                    evidencia: "Certificado de Análisis Multirresidual (Cero Químicos de Síntesis)",
+                    coords: "30.5283° N, 115.9324° W (Valle de San Quintín, BC)",
+                    historial: [
+                        { fecha: "2026-05-10", evento: "Cosecha manual y pre-selección en empaque Rancho San Vicente." },
+                        { fecha: "2026-05-11", evento: "Auditoría de Inocuidad Fitosanitaria de Lote por SENASICA." }
+                    ]
+                }
+            },
+            {
+                id: "pr5",
+                productorId: "p2",
+                nombre: "Espárrago Verde Orgánico de Caborca",
+                categoria: "Verduras y hortalizas",
+                costo: "$52.00 MXN por Manojo (Pedido mínimo: 200 manojos)",
+                disponibilidad: "5.0 Toneladas disponibles",
+                practica: "Orgánica",
+                certificaciones: ["SENASICA Buenas Prácticas", "USDA Organic"],
+                proceso: "Cosechado rigurosamente a mano al amanecer en los valles templados de Caborca. Riego eficiente por goteo con aguas profundas del desierto.",
+                imagen: "https://images.unsplash.com/photo-1601648764658-cf37e8c89b70?q=80&w=871&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-ESP-CAB-09",
+                    cosecha: "2026-05-14",
+                    evidencia: "Acreditación de inocuidad en parches de siembra del desierto",
+                    coords: "30.7110° N, 112.5800° W (Caborca, Sonora)",
+                    historial: [
+                        { fecha: "2026-05-14", evento: "Corte milimétrico manual del tallo tierno." },
+                        { fecha: "2026-05-15", evento: "Lavado hidrocooler para mantener la rigidez y el color verde brillante." }
+                    ]
+                }
+            },
+            {
+                id: "pr6",
+                productorId: "p1",
+                nombre: "Pimiento Bell Pepper Tricolor",
+                categoria: "Verduras y hortalizas",
+                costo: "$28.00 MXN por kg (Pedido mínimo: 500 kg)",
+                disponibilidad: "3.2 Toneladas para distribución",
+                practica: "Ecológica",
+                certificaciones: ["PrimusGFS Inocuidad"],
+                proceso: "Cultivo protegido en invernaderos de San Quintín. Manejo biológico de plagas con fauna benéfica y maduración natural en planta sin acelerantes químicos.",
+                imagen: "https://images.unsplash.com/photo-1519590350802-eb212e2ea536?q=80&w=773&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-BEL-SQ-45",
+                    cosecha: "2026-05-13",
+                    evidencia: "Análisis microbiológico libre de patógenos externos",
+                    coords: "30.5100° N, 115.9400° W (San Quintín, BC)",
+                    historial: [
+                        { fecha: "2026-05-13", evento: "Recolección selectiva según escala cromática exacta." },
+                        { fecha: "2026-05-14", evento: "Empaque en cajas corrugadas con respiración lateral." }
+                    ]
+                }
+            },
+
+            // --- CATEGORÍA 3: GRANOS Y LEGUMBRES ---
+            {
+                id: "pr7",
+                productorId: "p7",
+                nombre: "Frijol Pinto Sonora Alta Pureza",
+                categoria: "Granos y legumbres",
+                costo: "$26.00 MXN por Kilogramo (Pedido mínimo: Costales de 50 kg)",
+                disponibilidad: "8.0 Toneladas en tolvas de acopio",
+                practica: "Tradicional Sostenible",
+                certificaciones: ["SADER Inocuidad Alimentaria"],
+                proceso: "Leguminosa de ciclo corto adaptada al suelo sonorense. Cultivado bajo labranza de conservación que conserva la humedad de la cuenca del Río Yaqui, enriqueciendo los suelos con fijadores biológicos.",
+                imagen: "https://plus.unsplash.com/premium_photo-1726729279950-224b83ae7a75?q=80&w=870&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-FRI-YAQ-33",
+                    cosecha: "2026-04-30",
+                    evidencia: "Análisis físico de cribado de impurezas menor al 0.05%",
+                    coords: "27.4211° N, 109.9142° W (Valle del Yaqui, Sonora)",
+                    historial: [
+                        { fecha: "2026-04-30", evento: "Trilla mecánica y secado directo en vaina." },
+                        { fecha: "2026-05-02", evento: "Cribado físico y separación de polvillos en silos de Obregón." }
+                    ]
+                }
+            },
+            {
+                id: "pr8",
+                productorId: "p7",
+                nombre: "Trigo Harinero Premium Yaqui",
+                categoria: "Granos y legumbres",
+                costo: "$9.50 MXN por kg (Pedido mínimo: Tolva de 5 Ton.)",
+                disponibilidad: "120 Toneladas listas en silos",
+                practica: "Tradicional Sostenible",
+                certificaciones: ["Norma Oficial Mexicana de Sanidad Granelera"],
+                proceso: "Cereal de siembra invernal regado por gravedad en el Distrito de Riego del Río Yaqui. Cosecha mecánica de grano seco con monitoreo satelital de humedad.",
+                imagen: "https://images.unsplash.com/photo-1437252611977-07f74518abd7?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-TRI-YAQ-90",
+                    cosecha: "2026-05-02",
+                    evidencia: "Prueba de densidad y humedad óptima de molienda (12.1% de humedad)",
+                    coords: "27.4000° N, 109.9500° W (Cd. Obregón, Sonora)",
+                    historial: [
+                        { fecha: "2026-05-02", evento: "Trilla automatizada en parcelas llanas." },
+                        { fecha: "2026-05-04", evento: "Descarga e ingreso a silos de almacenamiento de gran volumen." }
+                    ]
+                }
+            },
+            {
+                id: "pr9",
+                productorId: "p7",
+                nombre: "Garbanzo Blanco de Exportación",
+                categoria: "Granos y legumbres",
+                costo: "$34.00 MXN por kg (Pedido mínimo: Costales de 25 kg)",
+                disponibilidad: "15 Toneladas en almacén",
+                practica: "Tradicional Sostenible",
+                certificaciones: ["USDA Phytosanitary Certificate"],
+                proceso: "Leguminosa de alto calibre seleccionada mecánicamente por tamaño de grano. Secado natural en planta con manejo mínimo de agroquímicos de síntesis.",
+                imagen: "https://images.unsplash.com/photo-1644432757699-bb5a01e8fb0e?q=80&w=774&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-GAR-YAQ-12",
+                    cosecha: "2026-04-28",
+                    evidencia: "Certificado fitosanitario de exportación federal",
+                    coords: "27.4500° N, 109.9000° W (Valle del Yaqui, Sonora)",
+                    historial: [
+                        { fecha: "2026-04-28", evento: "Corte y secado en andas del campo." },
+                        { fecha: "2026-05-02", evento: "Clasificación por tamaño y empaque en sacos de polipropileno." }
+                    ]
+                }
+            },
+
+            // --- CATEGORÍA 4: LÁCTEOS ---
+            {
+                id: "pr10",
+                productorId: "p3",
+                nombre: "Queso Real de Mexicali Añejo",
+                categoria: "Lácteos",
+                costo: "$145.00 MXN por Kilograma (Venta por hormas de 5 kg)",
+                disponibilidad: "450 kg listos para entrega",
+                practica: "Tradicional Sostenible",
+                certificaciones: ["Baja California Certificada"],
+                proceso: "Cuajado lento de leche fresca entera de ordeño matutino, prensado en moldes tradicionales de madera de pino y salado manual con sal de grano de San Felipe.",
+                imagen: "https://images.unsplash.com/photo-1452195100486-9cc805987862?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-QUE-MXL-2026-90",
+                    cosecha: "2026-03-01",
+                    evidencia: "Certificado de Pasteurización e inocuidad de lote lácteo.",
+                    coords: "32.5510° N, 115.3211° W (Ejido Nuevo León, Mexicali)",
+                    historial: [
+                        { fecha: "2026-03-01", evento: "Ordeño y cuajado inmediato con cuajo natural de alta calidad." },
+                        { fecha: "2026-05-01", evento: "Liberación de lote de cava tras 60 días de maduración y control sensorial." }
+                    ]
+                }
+            },
+            {
+                id: "pr11",
+                productorId: "p3",
+                nombre: "Yogurt Griego de Cabra Tradicional",
+                categoria: "Lácteos",
+                costo: "$68.00 MXN por Envase de 900g (Pedido mínimo: 50 envases)",
+                disponibilidad: "1,500 Envases semanales",
+                practica: "Ecológica",
+                certificaciones: ["COFEPRIS Sanidad Láctea", "Asociación Caprina BC"],
+                proceso: "Elaborado con leche de cabra fresca pasteurizada, acidificación lenta con búlgaros seleccionados y triple filtrado manual en lienzos para lograr una consistencia cremosa y libre de conservadores.",
+                imagen: "https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-YOG-CAB-88",
+                    cosecha: "2026-05-14",
+                    evidencia: "Informe microbiológico de cultivos lácticos activos benéficos",
+                    coords: "32.5511° N, 115.3212° W (Valle de Mexicali, BC)",
+                    historial: [
+                        { fecha: "2026-05-14", evento: "Ordeño matutino y pasteurización rápida." },
+                        { fecha: "2026-05-16", evento: "Envasado en frío y traslado a cadena de refrigeración estricta de 4°C." }
+                    ]
+                }
+            },
+            {
+                id: "pr12",
+                productorId: "p3",
+                nombre: "Queso Fresco Regional Tipo Cotija",
+                categoria: "Lácteos",
+                costo: "$110.00 MXN por kg (Mínimo: Hormas de 10 kg)",
+                disponibilidad: "600 kg semanales",
+                practica: "Tradicional Sostenible",
+                certificaciones: ["Marca Regional Baja California"],
+                proceso: "Elaboración artesanal con leche cruda filtrada de ganado Jersey alimentado en libre pastoreo. Salado con sal de mar rústica para un gusto seco característico.",
+                imagen: "https://images.unsplash.com/photo-1624806992066-5ffcf7ca186b?q=80&w=388&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-COT-MXL-02",
+                    cosecha: "2026-05-10",
+                    evidencia: "Análisis de inocuidad microbiológica de lácteos artesanales",
+                    coords: "32.5400° N, 115.3000° W (Ejido Nuevo León, Mexicali)",
+                    historial: [
+                        { fecha: "2026-05-10", evento: "Ordeño manual y cuajado artesanal en tinas." },
+                        { fecha: "2026-05-12", evento: "Prensado y salado rústico previo a envoltura en hoja de maíz." }
+                    ]
+                }
+            },
+
+            // --- CATEGORÍA 5: CARNES Y DERIVADOS ---
+            {
+                id: "pr13",
+                productorId: "p4",
+                nombre: "Corte New York Orgánico Grass-Fed",
+                categoria: "Carnes y derivados",
+                costo: "$320.00 MXN por Kilogramo (Cajas de 20 kg empacados al vacío)",
+                disponibilidad: "1.2 Toneladas disponibles en planta TIF",
+                practica: "Ganadería Regenerativa",
+                certificaciones: ["Certified Humane", "TIF 145 Sonora", "SAGARHPA Calidad"],
+                proceso: "Crianza de ganado Angus-Criollo libre en agostadero con pastos nativos. Sacrificio e industrialización bajo riguroso control higiénico y de temperatura en planta Tipo Inspección Federal (TIF).",
+                imagen: "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-NY-YAQ-2026-78",
+                    cosecha: "2026-05-02",
+                    evidencia: "Guía de movilización nacional REEMO y Certificado Médico Zoosanitario TIF",
+                    coords: "27.6431° N, 110.1202° W (Comunidad de Vícam, Sonora)",
+                    historial: [
+                        { fecha: "2026-05-02", evento: "Liberación médica de hato en Rancho San Ignacio, Vícam." },
+                        { fecha: "2026-05-04", evento: "Empaque al vacío termoencogible y ultracongelación rápida a -18°C." }
+                    ]
+                }
+            },
+            {
+                id: "pr14",
+                productorId: "p4",
+                nombre: "Rib Eye de Pastoreo Regenerativo",
+                categoria: "Carnes y derivados",
+                costo: "$345.00 MXN por kg (Venta mínima: Cajas de 15 kg)",
+                disponibilidad: "800 Kilogramos en stock",
+                practica: "Ganadería Regenerativa",
+                certificaciones: ["TIF 145 Sonora", "Certified Humane"],
+                proceso: "Ganado criado con libre acceso a pastos de temporal en el Valle del Yaqui. Carne con excelente marmoleo natural y sin inyección de ablandadores.",
+                imagen: "https://images.unsplash.com/photo-1615937657715-bc7b4b7962c1?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-RIB-YAQ-05",
+                    cosecha: "2026-05-05",
+                    evidencia: "Dictamen médico veterinario de sanidad animal de pastizal",
+                    coords: "27.6000° N, 110.1000° W (Vícam, Sonora)",
+                    historial: [
+                        { fecha: "2026-05-05", evento: "Procesamiento primario e inspección de canal en rastro TIF." },
+                        { fecha: "2026-05-07", evento: "Corte y porcionado fino en planta con certificación higiénica." }
+                    ]
+                }
+            },
+            {
+                id: "pr15",
+                productorId: "p4",
+                nombre: "Arrachera Marinada Premium Yaqui",
+                categoria: "Carnes y derivados",
+                costo: "$220.00 MXN por kg (Pedido mínimo: 50 kg)",
+                disponibilidad: "1.5 Toneladas disponibles",
+                practica: "Ganadería Regenerativa",
+                certificaciones: ["TIF 145 Sonora"],
+                proceso: "Arrachera externa seleccionada, marinada con jugos cítricos sonorenses y especias de la región. Empacado al vacío para mantener la textura tierna y jugosa.",
+                imagen: "https://images.unsplash.com/photo-1504973960431-1c467e159aa4?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-ARR-YAQ-11",
+                    cosecha: "2026-05-06",
+                    evidencia: "Certificado de inocuidad física del empaque al vacío",
+                    coords: "27.6200° N, 110.1100° W (Yaqui, Sonora)",
+                    historial: [
+                        { fecha: "2026-05-06", evento: "Extracción anatómica del corte y marinado rústico." },
+                        { fecha: "2026-05-08", evento: "Ultracongelación en cajas master listas para distribución." }
+                    ]
+                }
+            },
+
+            // --- CATEGORÍA 6: MIEL Y DERIVADOS ---
+            {
+                id: "pr16",
+                productorId: "p2",
+                nombre: "Miel Extra de Mezquite Silvestre",
+                categoria: "Miel y derivados",
+                costo: "$110.00 MXN por frasco (Lote mínimo: 120 frascos)",
+                disponibilidad: "2,500 Frascos en almacén",
+                practica: "Ecológica",
+                certificaciones: ["SADER Orgánica", "Hecho en Sonora"],
+                proceso: "Recolección estacional en apiarios rodeados exclusivamente de bosques de Mezquite en el desierto. Extracción por fuerza centrífuga mecánica a temperatura de colmena para retener enzimas activas.",
+                imagen: "https://images.unsplash.com/photo-1613548058193-1cd24c1bebcf?q=80&w=870&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-MIE-CAB-2026-02",
+                    cosecha: "2026-04-20",
+                    evidencia: "Certificado físico-químico de humedad (16.2% de humedad de alta pureza)",
+                    coords: "30.7122° N, 112.5831° W (Desierto de Caborca, Sonora)",
+                    historial: [
+                        { fecha: "2026-04-20", evento: "Desoperculado de bastidores y centrifugado en sala limpia de Caborca." },
+                        { fecha: "2026-04-24", evento: "Envasado oficial y colocación de sellos de garantía estatales." }
+                    ]
+                }
+            },
+            {
+                id: "pr17",
+                productorId: "p2",
+                nombre: "Miel de Azahar de Naranjo Orgánica",
+                categoria: "Miel y derivados",
+                costo: "$125.00 MXN por frasco de 1 kg (Mínimo: 60 frascos)",
+                disponibilidad: "1,200 Frascos listos",
+                practica: "Orgánica",
+                certificaciones: ["SADER Orgánica"],
+                proceso: "Miel monofloral obtenida durante la floración primaveral de los huertos cítricos del desierto. De aroma floral intenso y color dorado claro característico de la flor de azahar.",
+                imagen: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGhvbmV5fGVufDB8fDB8fHww",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-MIE-AZH-08",
+                    cosecha: "2026-04-10",
+                    evidencia: "Estudio de perfil polínico que acredita monofloralidad al 85%",
+                    coords: "30.7000° N, 112.5500° W (Caborca, Sonora)",
+                    historial: [
+                        { fecha: "2026-04-10", evento: "Retirada cuidadosa de bastidores con azahar." },
+                        { fecha: "2026-04-13", evento: "Filtrado mecánico de impurezas finas en tanques decantadores." }
+                    ]
+                }
+            },
+            {
+                id: "pr18",
+                productorId: "p2",
+                nombre: "Polen Orgánico Deshidratado de Desierto",
+                categoria: "Miel y derivados",
+                costo: "$210.00 MXN por Bolsa de 500g (Mínimo: 30 bolsas)",
+                disponibilidad: "500 kg disponibles",
+                practica: "Ecológica",
+                certificaciones: ["SADER Libre de Agroquímicos"],
+                proceso: "Polen recolectado mediante trampas sanitarias en piquera de colmena. Deshidratado de forma pasiva por aire templado y empacado herméticamente al vacío.",
+                imagen: "https://images.unsplash.com/photo-1723392197044-515b81ec57cb?q=80&w=580&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-POL-DES-21",
+                    cosecha: "2026-04-25",
+                    evidencia: "Análisis fitoquímico de alto valor nutricional de aminoácidos",
+                    coords: "30.7200° N, 112.5900° W (Caborca, Sonora)",
+                    historial: [
+                        { fecha: "2026-04-25", evento: "Recogida higiénica diaria de trampas de polen." },
+                        { fecha: "2026-04-28", evento: "Deshidratación suave en flujo continuo a 38°C para retener enzimas." }
+                    ]
+                }
+            },
+
+            // --- CATEGORÍA 7: PRODUCTOS ARTESANALES ---
+            {
+                id: "pr19",
+                productorId: "p6",
+                nombre: "Aceite de Oliva Virgen Extra Valle G.",
+                categoria: "Productos artesanales",
+                costo: "$180.00 MXN por Botella (Caja de 12 botellas)",
+                disponibilidad: "1,200 Botellas en almacén",
+                practica: "Orgánica",
+                certificaciones: ["USDA Organic", "Hecho en Baja California"],
+                proceso: "Extracción mecánica al frío en las primeras 4 horas de la cosecha manual de olivos Mission y Manzanilla. No filtrado químicamente para mantener los polifenoles originales de las tierras del Valle.",
+                imagen: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=600",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-AOVE-VG-2026-01",
+                    cosecha: "2026-04-15",
+                    evidencia: "Análisis de Acidez Libre Orgánica (0.24% de acidez excepcional)",
+                    coords: "32.1203° N, 116.5912° W (Valle de Guadalupe, BC)",
+                    historial: [
+                        { fecha: "2026-04-15", evento: "Recolección manual nocturna para evitar oxidación del fruto." },
+                        { fecha: "2026-04-18", evento: "Decantado natural en tanques de nitrógeno inerte para evitar contacto con aire." }
+                    ]
+                }
+            },
+            {
+                id: "pr20",
+                productorId: "p5",
+                nombre: "Sardinillas Ahumadas en Aceite de Olivo",
+                categoria: "Productos artesanales",
+                costo: "$48.00 MXN por Lata (Caja de 48 latas)",
+                disponibilidad: "10,000 Latas para despacho",
+                practica: "Tradicional Sostenible",
+                certificaciones: ["MSC Pesca Sostenible", "SENASICA Sanidad Pesquera"],
+                proceso: "Sardinilla costera seleccionada el mismo día de su captura. Ahumado tradicional lento en frío con virutas de encino rústico y conservado en aceite de oliva orgánico prensado en Ensenada.",
+                imagen: "https://images.unsplash.com/photo-1592625072060-3fbc6f16b734?q=80&w=435&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-SAR-ENS-202",
+                    cosecha: "2026-05-05",
+                    evidencia: "Acreditación de trazabilidad de zona de pesca segura Bahía Todos Santos",
+                    coords: "31.8601° N, 116.6334° W (Bahía de Ensenada, BC)",
+                    historial: [
+                        { fecha: "2026-05-05", evento: "Desembarque de materia prima a baja temperatura de 1°C." },
+                        { fecha: "2026-05-07", evento: "Envasado, esterilización en autoclave industrial a 121°C y cuarentena sanitaria." }
+                    ]
+                }
+            },
+            {
+                id: "pr21",
+                productorId: "p6",
+                nombre: "Mermelada Artesanal de Higo del Valle",
+                categoria: "Productos artesanales",
+                costo: "$55.00 MXN por Frasco (Pedido mínimo: Cajas de 24 frascos)",
+                disponibilidad: "800 Frascos listos para entrega",
+                practica: "Ecológica",
+                certificaciones: ["SADER Buenas Prácticas de Manufactura"],
+                proceso: "Preparada con higos negros madurados en la planta del Valle de Guadalupe. Cocida lentamente en ollas de cobre con azúcar de caña orgánica y jugo de limón natural como conservador.",
+                imagen: "https://images.unsplash.com/photo-1664810029952-88b5f9548d11?q=80&w=870&auto=format&fit=crop",
+                verificado: true,
+                trazabilidad: {
+                    lote: "L-MER-HIG-10",
+                    cosecha: "2026-05-02",
+                    evidencia: "Prueba de grados Brix (62° Brix de espesor ideal)",
+                    coords: "32.1215° N, 116.5910° W (Valle de Guadalupe, BC)",
+                    historial: [
+                        { fecha: "2026-05-02", evento: "Selección de fruta madura en huerto." },
+                        { fecha: "2026-05-03", evento: "Cocción lenta rústica artesanal y envasado al vacío." }
+                    ]
+                }
+            }
+        ];
+
+        // Transacciones históricas establecidas entre comercios reales de Sonora/Baja y los productores
+        let transacciones = [
+            {
+                id: "TRX-0493",
+                fecha: "2026-05-08",
+                comercio: "Casa Ley S.A. de C.V. (Hermosillo)",
+                productorId: "p4",
+                productoId: "pr13",
+                cantidad: "450 Kilogramos",
+                monto: "$144,000.00 MXN",
+                evidencia: "Factura de Compra B2B validada por SAT de Sonora",
+                loteAsociado: "L-NY-YAQ-2026-78",
+                estado: "Entregado e Inspeccionado"
+            },
+            {
+                id: "TRX-0321",
+                fecha: "2026-05-11",
+                comercio: "Distribuidora del Agro Ensenada S. de R.L.",
+                productorId: "p1",
+                productoId: "pr4",
+                cantidad: "2.5 Toneladas",
+                monto: "$46,250.00 MXN",
+                evidencia: "Guía de Tránsito Fitosanitaria Federal del Estado",
+                loteAsociado: "L-TOM-SQ-2026-04",
+                estado: "Entregado e Inspeccionado"
+            },
+            {
+                id: "TRX-0291",
+                fecha: "2026-05-13",
+                comercio: "Restaurantes Orgánicos de Tijuana",
+                productorId: "p1",
+                productoId: "pr1",
+                cantidad: "800 Clamshells",
+                monto: "$36,000.00 MXN",
+                evidencia: "Orden de Entrega y Recepción de Alimentos Sanos",
+                loteAsociado: "L-FRE-SQ-2026-11",
+                estado: "En Tránsito"
+            },
+            {
+                id: "TRX-0512",
+                fecha: "2026-05-14",
+                comercio: "Cadena Comercial OXXO S.A. de C.V. (Sonora-Baja)",
+                productorId: "p8",
+                productoId: "pr2",
+                cantidad: "1,500 Estuches B2B",
+                monto: "$142,500.00 MXN",
+                evidencia: "Contrato de Suministro Estacional de Desierto",
+                loteAsociado: "L-DAT-SLRC-99",
+                estado: "Entregado e Inspeccionado"
+            }
+        ];
+
+        // Mensajes simulados de contacto directo
+        let negociaciones = [
+            {
+                id: "NEG-101",
+                fecha: "2026-05-15",
+                comercio: "Supermercados El Florido",
+                correo: "compras@elflorido.com.mx",
+                telefono: "664-900-1122",
+                productorId: "p1",
+                productoId: "pr4",
+                asunto: "Cotización para Suministro Fijo Semanal",
+                mensaje: "Hola Rancho San Vicente, estamos muy interesados en su Tomate Saladette Orgánico de exportación. Requerimos un abasto fijo de 3 toneladas semanales entregadas en nuestro cedis de Tijuana. ¿Qué precio preferencial B2B nos pueden ofrecer por volumen contractual de 6 meses?"
+            },
+            {
+                id: "NEG-102",
+                fecha: "2026-05-16",
+                comercio: "Queserías Selectas del Norte",
+                correo: "compras@queseriaselectas.com",
+                telefono: "81-8340-9900",
+                productorId: "p3",
+                productoId: "pr10",
+                asunto: "Pedido de Queso Añejo para Monterrey",
+                mensaje: "Estimados Lácteos del Valle de Mexicali, quisiéramos ordenar una muestra inicial de 100 kg de su Queso Añejo para evaluar la aceptación en el mercado de Nuevo León. Por favor compártanos el proceso para el envío consolidado refrigerado."
+            }
+        ];
+
+        // Estado Global del Simulador
+        let rolActivo = "comercio"; // comercio, productor, administrador
+        let regionFiltrada = "todos";
+        let categoriasFiltradas = [];
+        let practicasFiltradas = [];
+
+        // --- 2) LÓGICA DE INICIALIZACIÓN ---
+        window.onload = function() {
+            aplicarFiltros();
+            renderizarDirectorioProductores();
+            renderizarTransacciones();
+            inicializarSelectoresRol();
+            renderizarBuzonNegociaciones();
+            
+            // Forzar renderizado de iconos Lucide
+            lucide.createIcons();
+        }
+
+        function changeTab(tabId) {
+            // Ocultar todas las secciones
+            document.querySelectorAll('main > section').forEach(sec => {
+                sec.classList.add('hidden');
+                sec.classList.remove('block');
+            });
+            
+            // Mostrar seleccionada
+            const targetSection = document.getElementById(`tab-${tabId}`);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('block');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Cambiar clase activa en menú de navegación
+            document.querySelectorAll('nav button').forEach(btn => {
+                if (btn.id === `nav-${tabId}`) {
+                    btn.className = "px-3.5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 text-agrogreen-800 bg-agrogreen-50";
+                } else {
+                    btn.className = "px-3.5 py-2 rounded-lg text-sm font-medium text-gray-600 hover:text-agrogreen-800 hover:bg-gray-50 transition-all duration-200 flex items-center gap-2";
+                }
+            });
+
+            // Re-renderizar iconos en la nueva sección
+            setTimeout(() => { lucide.createIcons(); }, 50);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- 3) SISTEMA DE FILTRADO Y RENDERIZADO DE PRODUCTOS ---
+        function aplicarFiltros() {
+            // 1. Obtener valores de filtros de interfaz de forma directa y robusta desde el DOM
+            const radioRegion = document.querySelector('input[name="filtro-region"]:checked');
+            regionFiltrada = radioRegion ? radioRegion.value : 'todos';
+
+            // Obtener categorías seleccionadas directamente de los checkboxes activos
+            const checkboxesCat = Array.from(document.querySelectorAll('.filtro-categoria-checkbox:checked'));
+            categoriasFiltradas = checkboxesCat.map(cb => cb.value);
+
+            // Obtener prácticas seleccionadas directamente de los checkboxes activos
+            const checkboxesPrac = Array.from(document.querySelectorAll('.filtro-practica:checked'));
+            practicasFiltradas = checkboxesPrac.map(cb => cb.value);
+
+            // 2. Filtrar
+            let productosFiltrados = productos.filter(p => {
+                // Filtro Región (necesita cruzar con productor)
+                const prod = productores.find(pr => pr.id === p.productorId);
+                const matchRegion = (regionFiltrada === 'todos') || (prod && prod.region === regionFiltrada);
+                
+                // Filtro Categoría
+                const matchCat = (categoriasFiltradas.length === 0) || (categoriasFiltradas.includes(p.categoria));
+                
+                // Filtro Práctica Productiva
+                const matchPrac = (practicasFiltradas.length === 0) || (practicasFiltradas.includes(p.practica));
+
+                // Solo productos verificados y activos son visibles
+                return matchRegion && matchCat && matchPrac && p.verificado;
+            });
+
+            // 3. Renderizar
+            renderizarProductos(productosFiltrados);
+        }
+
+        function resetearFiltros() {
+            document.querySelectorAll('input[name="filtro-region"]').forEach(radio => {
+                if(radio.value === 'todos') radio.checked = true;
+            });
+            document.querySelectorAll('.filtro-practica').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.filtro-categoria-checkbox').forEach(cb => cb.checked = false);
+            
+            regionFiltrada = "todos";
+            categoriasFiltradas = [];
+            practicasFiltradas = [];
+            
+            aplicarFiltros();
+        }
+
+        function renderizarProductos(lista) {
+            const grid = document.getElementById('productos-grid');
+            const noProducts = document.getElementById('no-products-message');
+            document.getElementById('total-productos-count').innerText = lista.length;
+            
+            grid.innerHTML = '';
+            
+            if (lista.length === 0) {
+                noProducts.classList.remove('hidden');
+                return;
+            }
+            noProducts.classList.add('hidden');
+
+            lista.forEach(p => {
+                const prod = productores.find(pr => pr.id === p.productorId);
+                const regionColor = prod && prod.region === 'Baja California' ? 'blue' : 'amber';
+                
+                // Obtener badge de práctica
+                let practicaBadge = "";
+                if(p.practica === 'Orgánica') practicaBadge = `<span class="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded border border-emerald-100">Orgánica</span>`;
+                else if(p.practica === 'Ecológica') practicaBadge = `<span class="bg-teal-50 text-teal-800 text-[10px] font-bold px-2 py-1 rounded border border-teal-100">Ecológica</span>`;
+                else if(p.practica === 'Ganadería Regenerativa') practicaBadge = `<span class="bg-amber-50 text-amber-800 text-[10px] font-bold px-2 py-1 rounded border border-amber-100 font-mono">Regenerativa</span>`;
+                else practicaBadge = `<span class="bg-blue-50 text-blue-800 text-[10px] font-bold px-2 py-1 rounded border border-blue-100">Sostenible</span>`;
+
+                grid.innerHTML += `
+                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col justify-between group">
+                        <div>
+                            <!-- Imagen y Tags -->
+                            <div class="relative h-48 overflow-hidden bg-gray-100">
+                                <img src="${p.imagen}" alt="${p.nombre}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1500937386664-56d15943747d?auto=format&fit=crop&q=80&w=400'">
+                                <span class="absolute top-3 left-3 bg-white/95 text-gray-950 text-[10px] font-bold px-2.5 py-1 rounded-md shadow-xs flex items-center gap-1 backdrop-blur-xs">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-${regionColor}-500"></span>
+                                    ${prod ? prod.region : ''}
+                                </span>
+                                <span class="absolute top-3 right-3 bg-agrogreen-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-md shadow-xs flex items-center gap-1">
+                                    <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> Verificado
+                                </span>
+                            </div>
+
+                            <!-- Contenido -->
+                            <div class="p-5">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-xs text-gray-400 font-medium uppercase tracking-wider">${p.categoria}</span>
+                                    <span>•</span>
+                                    ${practicaBadge}
+                                </div>
+                                <h3 class="text-lg font-extrabold text-gray-950 group-hover:text-agrogreen-800 transition-colors cursor-pointer" onclick="verDetalleProducto('${p.id}')">${p.nombre}</h3>
+                                
+                                <p class="text-xs text-gray-500 font-medium mt-1.5 flex items-center gap-1.5 cursor-pointer hover:underline text-agroearth-700" onclick="verDetalleProductor('${prod.id}')">
+                                    <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${prod ? prod.nombre : 'Productor Verificado'}
+                                </p>
+
+                                <div class="bg-gray-50 rounded-xl p-3.5 mt-4 space-y-1.5 border border-gray-100">
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-gray-500">Costo B2B:</span>
+                                        <strong class="text-agrogreen-900 font-semibold">${p.costo}</strong>
+                                    </div>
+                                    <div class="flex justify-between text-xs">
+                                        <span class="text-gray-500">Disponibilidad:</span>
+                                        <span class="text-gray-700 font-semibold">${p.disponibilidad}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Acción -->
+                        <div class="p-5 pt-0 flex gap-2">
+                            <button onclick="verDetalleProducto('${p.id}')" class="flex-1 bg-white border border-gray-300 hover:border-agrogreen-700 hover:bg-agrogreen-50 text-gray-700 hover:text-agrogreen-900 text-xs font-bold py-2.5 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5">
+                                <i data-lucide="qr-code" class="w-3.5 h-3.5"></i> Ficha y Trazabilidad
+                            </button>
+                            <button onclick="contactarProductor('${p.productorId}', '${p.id}')" class="bg-agrogreen-700 hover:bg-agrogreen-800 text-white text-xs font-bold py-2.5 px-3 rounded-lg transition-all flex items-center justify-center gap-1.5">
+                                <i data-lucide="message-square" class="w-3.5 h-3.5"></i> Contactar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Re-renderizar iconos inyectados
+            lucide.createIcons();
+        }
+
+        // --- 4) DIRECTORIO DE PRODUCTORES ---
+        function renderizarDirectorioProductores() {
+            const grid = document.getElementById('productores-grid');
+            grid.innerHTML = '';
+
+            productores.forEach(p => {
+                const countProductos = productos.filter(pr => pr.productorId === p.id && pr.verificado).length;
+                
+                grid.innerHTML += `
+                    <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col justify-between p-6">
+                        <div class="flex items-start gap-4">
+                            <img src="${p.imagen}" alt="${p.nombre}" class="w-16 h-16 rounded-xl object-cover border border-gray-100 shadow-inner" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=300'">
+                            <div>
+                                <div class="flex items-center gap-1.5">
+                                    <h3 class="font-extrabold text-gray-900 hover:underline cursor-pointer" onclick="verDetalleProductor('${p.id}')">${p.nombre}</h3>
+                                    <i data-lucide="verified" class="w-4 h-4 text-agrogreen-600 fill-agrogreen-100"></i>
+                                </div>
+                                <p class="text-xs text-gray-500 flex items-center gap-1 mt-1 font-medium">
+                                    <i data-lucide="map-pin" class="w-3 h-3"></i> ${p.comunidad}
+                                </p>
+                                <span class="inline-block mt-2 text-[10px] font-extrabold uppercase bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
+                                    ${p.region}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="my-5 border-t border-b border-gray-100 py-4">
+                            <p class="text-xs text-gray-600 leading-relaxed line-clamp-3">${p.historia}</p>
+                            <div class="mt-3.5 flex flex-wrap gap-1">
+                                ${p.certificaciones.map(c => `<span class="bg-agrogreen-50 text-agrogreen-800 text-[10px] px-2 py-0.5 rounded font-medium border border-agrogreen-100/30">${c}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-xs pt-2">
+                            <span class="text-gray-500 font-medium">${countProductos} Productos en Catálogo</span>
+                            <button onclick="verDetalleProductor('${p.id}')" class="text-agrogreen-700 hover:text-agrogreen-900 font-bold flex items-center gap-1">
+                                Ver Perfil Completo <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // --- 5) HISTORIAL COMERCIAL ---
+        function renderizarTransacciones() {
+            const body = document.getElementById('tabla-transacciones-body');
+            body.innerHTML = '';
+
+            transacciones.forEach(t => {
+                const prod = productores.find(p => p.id === t.productorId);
+                const item = productos.find(i => i.id === t.productoId);
+                
+                body.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="p-4 font-mono text-xs text-gray-900">
+                            <strong>${t.id}</strong>
+                            <div class="text-gray-400 mt-1">${t.fecha}</div>
+                        </td>
+                        <td class="p-4 font-bold text-gray-800">${t.comercio}</td>
+                        <td class="p-4">
+                            <div class="flex items-center gap-1.5 text-xs font-semibold text-gray-700 cursor-pointer hover:underline" onclick="verDetalleProductor('${prod.id}')">
+                                <i data-lucide="users" class="w-3.5 h-3.5 text-agrogreen-600"></i> ${prod ? prod.nombre : 'N/A'}
+                            </div>
+                            <span class="text-[10px] text-gray-400">${prod ? prod.comunidad : ''}</span>
+                        </td>
+                        <td class="p-4">
+                            <span class="font-bold text-agrogreen-900 text-xs">${item ? item.nombre : 'Producto Eliminado'}</span>
+                            <div class="text-[10px] font-mono text-gray-400 mt-1">Lote: ${t.loteAsociado}</div>
+                        </td>
+                        <td class="p-4 text-center font-semibold text-gray-800 text-xs">${t.cantidad}</td>
+                        <td class="p-4 text-right font-extrabold text-agrogreen-950">${t.monto}</td>
+                        <td class="p-4 text-center">
+                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-extrabold px-2.5 py-1 rounded-full flex items-center justify-center gap-1 w-fit mx-auto">
+                                <i data-lucide="shield-check" class="w-3 h-3"></i> ${t.estado}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        // --- 6) VISTA DETALLE PRODUCTOR ---
+        function verDetalleProductor(productorId) {
+            const prod = productores.find(p => p.id === productorId);
+            if (!prod) return;
+
+            const countProductos = productos.filter(pr => pr.productorId === prod.id && pr.verificado).length;
+            const detailContainer = document.getElementById('detalle-productor-content');
+            
+            // Filtrar productos de este productor
+            const productosPropios = productos.filter(p => p.productorId === prod.id && p.verificado);
+
+            detailContainer.innerHTML = `
+                <button onclick="changeTab('productores')" class="mb-6 text-xs font-bold text-agrogreen-700 hover:text-agrogreen-900 flex items-center gap-1">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Directorio
+                </button>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- Ficha Izquierda -->
+                    <div class="lg:col-span-1 bg-white border border-gray-200 rounded-2xl p-6 shadow-xs h-fit space-y-6">
+                        <div class="text-center pb-6 border-b border-gray-100">
+                            <img src="${prod.imagen}" alt="${prod.nombre}" class="w-24 h-24 rounded-2xl object-cover mx-auto border border-gray-100 shadow-md mb-4" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=300'">
+                            <div class="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-800 text-xs font-extrabold px-3 py-1 rounded-full border border-emerald-100">
+                                <i data-lucide="verified" class="w-4 h-4"></i> Productor Verificado
+                            </div>
+                            <h3 class="text-2xl font-black text-gray-950 mt-3">${prod.nombre}</h3>
+                            <p class="text-sm text-gray-500 mt-1 flex items-center justify-center gap-1.5">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-agrogreen-700"></i> ${prod.comunidad}
+                            </p>
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Región</span>
+                                <strong class="text-sm text-gray-800">${prod.region}</strong>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Contacto Directo B2B</span>
+                                <strong class="text-sm text-agrogreen-900 font-semibold">${prod.contacto}</strong>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Certificaciones de Campo</span>
+                                <div class="flex flex-wrap gap-1.5 mt-1.5">
+                                    ${prod.certificaciones.map(c => `<span class="bg-gray-100 text-gray-800 text-xs px-2 py-0.5 rounded font-semibold">${c}</span>`).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <button onclick="contactarProductor('${prod.id}')" class="w-full bg-agrogreen-700 hover:bg-agrogreen-800 text-white font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="message-square" class="w-5 h-5"></i> Iniciar Negociación
+                        </button>
+                    </div>
+
+                    <!-- Información Detallada Derecha -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <!-- Historia y Prácticas -->
+                        <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-xs space-y-6">
+                            <div>
+                                <h4 class="text-lg font-bold text-gray-900 flex items-center gap-2 mb-3">
+                                    <i data-lucide="book-open" class="w-5 h-5 text-agroearth-700"></i> Historia del Productor
+                                </h4>
+                                <p class="text-gray-600 leading-relaxed text-sm">${prod.historia}</p>
+                            </div>
+                            <div class="border-t border-gray-100 pt-6">
+                                <h4 class="text-lg font-bold text-gray-900 flex items-center gap-2 mb-3">
+                                    <i data-lucide="sprout" class="w-5 h-5 text-agrogreen-700"></i> Procesos de Cultivo o Crianza
+                                </h4>
+                                <p class="text-gray-600 leading-relaxed text-sm">${prod.procesos}</p>
+                            </div>
+                        </div>
+
+                        <!-- Catálogo Propio de Productos -->
+                        <div>
+                            <h4 class="text-xl font-extrabold text-gray-950 mb-4 flex items-center gap-2">
+                                <i data-lucide="search" class="w-5 h-5 text-agrogreen-700"></i> Productos de ${prod.nombre} en Oferta (${countProductos})
+                            </h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                ${productosPropios.map(p => `
+                                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden p-4 flex flex-col justify-between hover:shadow-md transition-all">
+                                        <div class="flex gap-4">
+                                            <img src="${p.imagen}" alt="${p.nombre}" class="w-20 h-20 rounded-lg object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1500937386664-56d15943747d?auto=format&fit=crop&q=80&w=200'">
+                                            <div>
+                                                <h5 class="font-extrabold text-gray-900 hover:underline cursor-pointer text-sm" onclick="verDetalleProducto('${p.id}')">${p.nombre}</h5>
+                                                <span class="text-[10px] bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded font-bold">${p.practica}</span>
+                                                <div class="text-xs text-gray-500 mt-2">Costo B2B: <strong class="text-agrogreen-800">${p.costo}</strong></div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 flex gap-2">
+                                            <button onclick="verDetalleProducto('${p.id}')" class="flex-1 bg-gray-50 hover:bg-gray-100 text-gray-700 text-[11px] font-bold py-2 rounded transition-all">
+                                                Ficha de Trazabilidad
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            changeTab('detalle-productor');
+            lucide.createIcons();
+        }
+
+        // --- 7) VISTA DETALLE DE PRODUCTO + TRAZABILIDAD ---
+        function verDetalleProducto(productoId) {
+            const prodObj = productos.find(p => p.id === productoId);
+            if (!prodObj) return;
+
+            const productorObj = producers = productores.find(p => p.id === prodObj.productorId);
+            const detailContainer = document.getElementById('detalle-producto-content');
+
+            // Historial de transacciones de este producto para fianza comercial
+            const transaccionesDeEsteProducto = transacciones.filter(t => t.productoId === prodObj.id);
+
+            detailContainer.innerHTML = `
+                <button onclick="changeTab('catalogo')" class="mb-6 text-xs font-bold text-agrogreen-700 hover:text-agrogreen-900 flex items-center gap-1">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver al Catálogo
+                </button>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <!-- FOTO E INFO PRIMARIA -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-xs">
+                            <img src="${prodObj.imagen}" alt="${prodObj.nombre}" class="w-full h-64 object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1500937386664-56d15943747d?auto=format&fit=crop&q=80&w=400'">
+                            <div class="p-6">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-xs font-bold text-gray-400 uppercase">${prodObj.categoria}</span>
+                                    <span>•</span>
+                                    <span class="bg-emerald-50 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">${prodObj.practica}</span>
+                                </div>
+                                <h3 class="text-2xl font-black text-gray-950">${prodObj.nombre}</h3>
+                                
+                                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center gap-3">
+                                    <img src="${productorObj.imagen}" class="w-10 h-10 rounded-lg object-cover" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1500937386664-56d15943747d?auto=format&fit=crop&q=80&w=100'">
+                                    <div>
+                                        <p class="text-xs text-gray-400 font-medium">Productor Origen</p>
+                                        <strong class="text-sm text-gray-900 hover:underline cursor-pointer" onclick="verDetalleProductor('${productorObj.id}')">${productorObj.nombre}</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ficha de Registro B2B -->
+                        <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-xs space-y-4">
+                            <h4 class="font-bold text-gray-900 border-b border-gray-100 pb-2.5">Detalles del Registro Comercial</h4>
+                            <div class="space-y-3 text-sm">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Costo Base B2B:</span>
+                                    <strong class="text-agrogreen-800">${prodObj.costo}</strong>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Volumen Stock:</span>
+                                    <strong class="text-gray-900">${prodObj.disponibilidad}</strong>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Práctica Productiva:</span>
+                                    <strong class="text-gray-900">${prodObj.practica}</strong>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Región de Origen:</span>
+                                    <strong class="text-gray-900">${productorObj.region}</strong>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-500">Estatus Fitosanitario:</span>
+                                    <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-600"></span> APROBADO B2B
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SISTEMA DE TRAZABILIDAD TÉCNICA (DETALLE FORMAL) -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-xs">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="bg-agrogreen-100 text-agrogreen-800 p-2.5 rounded-xl">
+                                        <i data-lucide="qr-code" class="w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-lg font-bold text-gray-900">Ficha Técnica y Trazabilidad de Lote</h4>
+                                        <p class="text-xs text-gray-500">Registro único e inalterable del ciclo del producto.</p>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-100 text-gray-800 font-mono text-xs px-3.5 py-1.5 rounded-lg border border-gray-200">
+                                    LOTE ID: <strong>${prodObj.trazabilidad.lote}</strong>
+                                </div>
+                            </div>
+
+                            <div class="grid md:grid-cols-2 gap-6 mb-8 bg-gray-50 p-5 rounded-xl border border-gray-100">
+                                <div>
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Fecha de Cosecha / Elaboración</span>
+                                    <strong class="text-sm text-gray-800 flex items-center gap-1.5 mt-1">
+                                        <i data-lucide="calendar" class="w-4 h-4 text-agrogreen-700"></i> ${prodObj.trazabilidad.cosecha}
+                                    </strong>
+                                </div>
+                                <div>
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Coordenadas Geográficas de Origen</span>
+                                    <strong class="text-sm text-gray-800 flex items-center gap-1.5 mt-1">
+                                        <i data-lucide="map-pin" class="w-4 h-4 text-agrogreen-700"></i> ${prodObj.trazabilidad.coords}
+                                    </strong>
+                                </div>
+                                <div class="md:col-span-2 border-t border-gray-200 pt-4 mt-2">
+                                    <span class="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">Evidencia Documental</span>
+                                    <p class="text-sm text-agrogreen-900 font-bold flex items-center gap-2 mt-1">
+                                        <i data-lucide="shield-check" class="w-4 h-4 text-agrogreen-600"></i> ${prodObj.trazabilidad.evidencia}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Línea de tiempo (Historial del Lote) -->
+                            <div class="space-y-6">
+                                <h5 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Línea de Tiempo de Movimientos</h5>
+                                <div class="relative pl-6 border-l-2 border-agrogreen-100 space-y-6">
+                                    ${prodObj.trazabilidad.historial.map((h, i) => `
+                                        <div class="relative">
+                                            <!-- Indicador -->
+                                            <span class="absolute -left-[31px] top-1.5 bg-white border-2 border-agrogreen-700 w-4 h-4 rounded-full flex items-center justify-center">
+                                                <span class="w-1.5 h-1.5 bg-agrogreen-700 rounded-full"></span>
+                                            </span>
+                                            <div class="flex items-center gap-3">
+                                                <span class="text-xs font-mono font-bold text-agrogreen-700 bg-agrogreen-50 px-2 py-0.5 rounded border border-agrogreen-100">${h.fecha}</span>
+                                            </div>
+                                            <p class="text-sm text-gray-700 mt-2 font-medium leading-relaxed">${h.evento}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Proceso Productivo Completo -->
+                        <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-xs">
+                            <h4 class="text-lg font-bold text-gray-900 flex items-center gap-2 mb-4">
+                                <i data-lucide="sprout" class="w-5 h-5 text-agrogreen-700"></i> Proceso de Production y Prácticas Sustentables
+                            </h4>
+                            <p class="text-gray-600 text-sm leading-relaxed">${prodObj.proceso}</p>
+                        </div>
+
+                        <!-- Evidencia de Relación Comercial Directa (Transacciones previas) -->
+                        <div class="bg-white border border-gray-200 rounded-2xl p-8 shadow-xs">
+                            <h4 class="text-lg font-bold text-gray-900 flex items-center gap-2 mb-4">
+                                <i data-lucide="history" class="w-5 h-5 text-agroearth-700"></i> Historial de Negocios de este Lote / Alimento
+                            </h4>
+                            ${transaccionesDeEsteProducto.length === 0 ? `
+                                <div class="text-center py-6 bg-gray-50 border border-dashed rounded-xl">
+                                    <p class="text-xs text-gray-400 font-medium">No hay transacciones registradas de este lote exacto.</p>
+                                    <span class="text-[10px] text-gray-400 font-light block mt-0.5">La relación comercial de este lote está lista para ser inaugurada.</span>
+                                </div>
+                            ` : `
+                                <div class="space-y-4">
+                                    ${transaccionesDeEsteProducto.map(t => `
+                                        <div class="flex items-center justify-between p-4 bg-gray-50 border border-gray-100 rounded-xl text-sm">
+                                            <div>
+                                                <strong class="text-gray-950 font-semibold">${t.comercio}</strong>
+                                                <div class="text-[10px] text-gray-400 mt-0.5">ID: ${t.id} • Suministrado el: ${t.fecha}</div>
+                                            </div>
+                                            <div class="text-right">
+                                                <strong class="text-agrogreen-800 text-xs font-bold block">${t.cantidad}</strong>
+                                                <span class="text-[10px] bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded border border-emerald-100 font-bold">${t.estado}</span>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `}
+                        </div>
+
+                        <!-- FORMULARIO DE MENSAJE DIRECTO SIN INTERMEDIARIOS -->
+                        <div class="bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-2xl p-8 shadow-sm">
+                            <div class="flex items-center gap-3 border-b border-gray-100 pb-4 mb-6">
+                                <div class="bg-agrogreen-700 text-white p-2 rounded-lg">
+                                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-gray-900">Formulario de Contacto Directo B2B</h4>
+                                    <p class="text-xs text-gray-500">Negocie precios, volumen de abasto y logística sin intermediación comercial.</p>
+                                </div>
+                            </div>
+
+                            <form id="form-contacto-directo" onsubmit="enviarNegociacion(event, '${productorObj.id}', '${prodObj.id}')" class="space-y-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Nombre del Comercio</label>
+                                        <input type="text" id="neg-comercio" placeholder="Ej. Walmart México Cedis Tijuana" class="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Asunto de Negociación</label>
+                                        <input type="text" id="neg-asunto" value="Cotización Mayorista de ${prodObj.nombre}" class="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm" required>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Correo de Contacto</label>
+                                        <input type="email" id="neg-correo" placeholder="Ej. adquisiciones@comercio.com" class="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Teléfono de Oficina</label>
+                                        <input type="tel" id="neg-telefono" placeholder="Ej. 664-123-4567" class="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm" required>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">Mensaje / Requerimiento de Abasto (Mantenlo formal)</label>
+                                    <textarea id="neg-mensaje" rows="4" placeholder="Especifica la cantidad semanal que necesitas, frecuencia de entrega y si requieres flete a tu bodega..." class="w-full bg-white border border-gray-300 rounded-lg p-2.5 text-sm" required></textarea>
+                                </div>
+
+                                <div class="flex justify-between items-center pt-2">
+                                    <div class="flex items-center gap-1.5 text-xs text-gray-400">
+                                        <i data-lucide="lock" class="w-3.5 h-3.5"></i> Canal directo y encriptado
+                                    </div>
+                                    <button type="submit" class="bg-agrogreen-700 hover:bg-agrogreen-800 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all flex items-center gap-2">
+                                        <i data-lucide="send" class="w-4 h-4"></i> Enviar Mensaje de Negociación
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            `;
+            changeTab('detalle-producto');
+            lucide.createIcons();
+        }
+
+        // --- 8) NEGOCIACIÓN Y CONTACTO DIRECTO ---
+        function contactarProductor(productorId, productoId = '') {
+            if(productoId) {
+                verDetalleProducto(productoId);
+                setTimeout(() => {
+                    document.getElementById('form-contacto-directo').scrollIntoView({ behavior: 'smooth' });
+                }, 400);
+            } else {
+                verDetalleProductor(productorId);
+            }
+        }
+
+        // --- 9) GESTIÓN DE ROLES E INTERACTIVIDAD ---
+        function inicializarSelectoresRol() {
+            const prodFormProductor = document.getElementById('prod-form-productor');
+            prodFormProductor.innerHTML = productores.map(p => `<option value="${p.id}">${p.nombre} (${p.region})</option>`).join('');
+
+            const prodFormCat = document.getElementById('prod-form-categoria');
+            prodFormCat.innerHTML = categorias.map(c => `<option value="${c}">${c}</option>`).join('');
+
+            generarNuevoIDLote();
+            actualizarVistasRoles();
+            renderizarPendientesAdmin();
+        }
+
+        function generarNuevoIDLote() {
+            const input = document.getElementById('prod-form-lote-id');
+            if (input) {
+                input.value = `L-REG-${Math.floor(Math.random() * 9000) + 1000}-2026`;
+            }
+        }
+
+        function cambiarRol(rol) {
+            rolActivo = rol;
+            
+            const text = document.getElementById('role-text');
+            const dot = document.getElementById('role-dot');
+            
+            if (rol === 'comercio') {
+                text.innerText = "Comercio (Visitante)";
+                dot.className = "w-2 h-2 rounded-full bg-blue-500 animate-pulse";
+            } else if (rol === 'productor') {
+                text.innerText = "Productor (Editor/Vendedor)";
+                dot.className = "w-2 h-2 rounded-full bg-orange-500 animate-pulse";
+            } else if (rol === 'administrador') {
+                text.innerText = "Administrador (Auditor)";
+                dot.className = "w-2 h-2 rounded-full bg-red-600 animate-pulse";
+            }
+
+            const btns = ['comercio', 'productor', 'administrador'];
+            btns.forEach(b => {
+                const btn = document.getElementById(`btn-rol-${b}`);
+                if (b === rol) {
+                    btn.className = "flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left bg-white text-gray-900 border-white shadow-md";
+                    btn.querySelector('span').innerText = "Activo";
+                    btn.querySelector('span').className = "bg-agrogreen-100 text-agrogreen-800 text-xs px-2 py-1 rounded font-bold";
+                } else {
+                    btn.className = "flex items-center justify-between p-4 rounded-xl border-2 transition-all text-left bg-white/10 hover:bg-white/20 border-white/10 text-white";
+                    btn.querySelector('span').innerText = "Cambiar";
+                    btn.querySelector('span').className = "bg-white/10 text-white text-xs px-2 py-1 rounded font-semibold";
+                }
+            });
+
+            actualizarVistasRoles();
+        }
+
+        function actualizarVistasRoles() {
+            const vistaProd = document.getElementById('panel-productor-vista');
+            const vistaAdmin = document.getElementById('panel-admin-vista');
+            const vistaComercio = document.getElementById('panel-comercio-vista');
+
+            vistaProd.classList.add('hidden');
+            vistaAdmin.classList.add('hidden');
+            vistaComercio.classList.add('hidden');
+
+            if (rolActivo === 'productor') {
+                vistaProd.classList.remove('hidden');
+            } else if (rolActivo === 'administrador') {
+                vistaAdmin.classList.remove('hidden');
+            } else {
+                vistaComercio.classList.remove('hidden');
+            }
+        }
+
+        function guardarNuevoProducto(event) {
+            event.preventDefault();
+
+            const pId = document.getElementById('prod-form-productor').value;
+            const nombre = document.getElementById('prod-form-nombre').value;
+            const categoria = document.getElementById('prod-form-categoria').value;
+            const costo = document.getElementById('prod-form-costo').value;
+            const disponibilidad = document.getElementById('prod-form-disponibilidad').value;
+            const practica = document.getElementById('prod-form-practica').value;
+            const proceso = document.getElementById('prod-form-proceso').value;
+            const imagen = document.getElementById('prod-form-imagen').value;
+
+            const lote = document.getElementById('prod-form-lote-id').value;
+            const fecha = document.getElementById('prod-form-fecha').value;
+            const coords = document.getElementById('prod-form-coords').value;
+            const certificado = document.getElementById('prod-form-certificado-tipo').value;
+
+            const nuevoProd = {
+                id: `pr-${Math.floor(Math.random() * 9000) + 1000}`,
+                productorId: pId,
+                nombre: nombre,
+                categoria: categoria,
+                costo: costo,
+                disponibilidad: disponibilidad,
+                practica: practica,
+                certificaciones: [certificado],
+                proceso: proceso,
+                imagen: imagen,
+                verificado: false,
+                trazabilidad: {
+                    lote: lote,
+                    cosecha: fecha,
+                    evidencia: certificado,
+                    coords: coords,
+                    historial: [
+                        { fecha: fecha, evento: "Cosecha o elaboración completada de manera inocua en parcela." },
+                        { fecha: new Date().toISOString().split('T')[0], evento: "Producto registrado y enviado a auditoría institucional." }
+                    ]
+                }
+            };
+
+            productos.unshift(nuevoProd);
+            
+            renderizarPendientesAdmin();
+            resetearFormularioProducto();
+
+            setTimeout(() => {
+                cambiarRol('administrador');
+                document.getElementById('panel-admin-vista').scrollIntoView({ behavior: 'smooth' });
+            }, 500);
+        }
+
+        function resetearFormularioProducto() {
+            document.getElementById('form-registrar-producto').reset();
+            generarNuevoIDLote();
+        }
+
+        function renderizarPendientesAdmin() {
+            const container = document.getElementById('lista-pendientes-admin');
+            container.innerHTML = '';
+
+            const pendientes = productos.filter(p => !p.verificado);
+
+            if (pendientes.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 bg-gray-50 border border-dashed rounded-xl text-gray-500 text-sm">
+                        <i data-lucide="check-circle" class="w-8 h-8 text-agrogreen-600 mx-auto mb-2"></i>
+                        No hay productos pendientes de validación en este momento. Todos los lotes están debidamente auditados.
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            pendientes.forEach(p => {
+                const prod = productores.find(pr => pr.id === p.productorId);
+                container.innerHTML += `
+                    <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+                        <div class="space-y-3 flex-1">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Pendiente de Aprobación</span>
+                                <span class="text-xs text-gray-400">ID: ${p.id}</span>
+                            </div>
+                            <h5 class="text-base font-extrabold text-gray-900">${p.nombre}</h5>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 text-xs text-gray-600 bg-white p-4 rounded-lg border border-gray-100">
+                                <div>Productor: <strong>${prod ? prod.nombre : 'N/A'}</strong></div>
+                                <div>Lote: <strong class="font-mono text-agrogreen-700">${p.trazabilidad.lote}</strong></div>
+                                <div>Cosecha: <strong>${p.trazabilidad.cosecha}</strong></div>
+                                <div>Coordenadas: <strong>${p.trazabilidad.coords}</strong></div>
+                                <div class="sm:col-span-2">Evidencia: <strong class="text-agroearth-700">${p.trazabilidad.evidencia}</strong></div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-2 w-full lg:w-fit">
+                            <button onclick="rechazarProducto('${p.id}')" class="flex-1 lg:flex-none bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold px-4 py-2.5 rounded-lg border border-red-200 transition-all">
+                                Rechazar / Corregir
+                            </button>
+                            <button onclick="aprobarProducto('${p.id}')" class="flex-1 lg:flex-none bg-agrogreen-700 hover:bg-agrogreen-800 text-white text-xs font-bold px-5 py-2.5 rounded-lg transition-all flex items-center justify-center gap-1.5">
+                                <i data-lucide="check-square" class="w-4 h-4"></i> Validar & Publicar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function aprobarProducto(productoId) {
+            const index = productos.findIndex(p => p.id === productoId);
+            if (index > -1) {
+                productos[index].verificado = true;
+                productos[index].trazabilidad.historial.push({
+                    fecha: new Date().toISOString().split('T')[0],
+                    evento: "Lote aprobado institucionalmente tras auditoría física de documentos y coordenadas fitosanitarias."
+                });
+                
+                renderizarPendientesAdmin();
+                aplicarFiltros();
+                renderizarDirectorioProductores();
+                
+                setTimeout(() => {
+                    changeTab('catalogo');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 300);
+            }
+        }
+
+        function rechazarProducto(productoId) {
+            const index = productos.findIndex(p => p.id === productoId);
+            if (index > -1) {
+                productos.splice(index, 1);
+                renderizarPendientesAdmin();
+            }
+        }
+
+        // --- 10) MODAL REGISTRAR TRANSACCIÓN COMERCIAL ---
+        function abrirModalRegistrarTransaccion() {
+            const modal = document.getElementById('modal-transaccion');
+            modal.classList.remove('hidden');
+
+            const selectProductor = document.getElementById('trans-productor');
+            selectProductor.innerHTML = productores.map(p => `<option value="${p.id}">${p.nombre} (${p.region})</option>`).join('');
+
+            actualizarProductosEnFormTransaccion();
+            lucide.createIcons();
+        }
+
+        function cerrarModalRegistrarTransaccion() {
+            document.getElementById('modal-transaccion').classList.add('hidden');
+        }
+
+        function actualizarProductosEnFormTransaccion() {
+            const pId = document.getElementById('trans-productor').value;
+            const selectProducto = document.getElementById('trans-producto');
+            
+            const productosPropios = productos.filter(p => p.productorId === pId && p.verificado);
+            
+            if (productosPropios.length === 0) {
+                selectProducto.innerHTML = `<option value="">No hay productos aprobados</option>`;
+                return;
+            }
+
+            selectProducto.innerHTML = productosPropios.map(p => `<option value="${p.id}">${p.nombre} (Lote: ${p.trazabilidad.lote})</option>`).join('');
+        }
+
+        function guardarTransaccion(event) {
+            event.preventDefault();
+
+            const comercio = document.getElementById('trans-comercio').value;
+            const productorId = document.getElementById('trans-productor').value;
+            const productoId = document.getElementById('trans-producto').value;
+            const cantidad = document.getElementById('trans-cantidad').value;
+            const monto = document.getElementById('trans-monto').value;
+            const evidencia = document.getElementById('trans-evidencia').value;
+
+            const item = productos.find(p => p.id === productoId);
+
+            const nuevaTrans = {
+                id: `TRX-${Math.floor(Math.random() * 9000) + 1000}`,
+                fecha: new Date().toISOString().split('T')[0],
+                comercio: comercio,
+                productorId: productorId,
+                productoId: productoId,
+                cantidad: cantidad,
+                monto: monto,
+                evidencia: evidencia,
+                loteAsociado: item ? item.trazabilidad.lote : 'L-N/A-2026',
+                estado: "Entregado e Inspeccionado"
+            };
+
+            transacciones.unshift(nuevaTrans);
+            renderizarTransacciones();
+            cerrarModalRegistrarTransaccion();
+            
+            changeTab('transacciones');
+        }
+
+        // --- SISTEMA DE FILTRADO Y RENDERIZADO DE PRODUCTOS ---
+        function aplicarFiltros() {
+            // 1. Obtener valores de filtros de interfaz de forma directa y robusta desde el DOM
+            const radioRegion = document.querySelector('input[name="filtro-region"]:checked');
+            regionFiltrada = radioRegion ? radioRegion.value : 'todos';
+
+            // Obtener categorías seleccionadas directamente de los checkboxes activos
+            const checkboxesCat = Array.from(document.querySelectorAll('.filtro-categoria-checkbox:checked'));
+            categoriasFiltradas = checkboxesCat.map(cb => cb.value);
+
+            // Obtener prácticas seleccionadas directamente de los checkboxes activos
+            const checkboxesPrac = Array.from(document.querySelectorAll('.filtro-practica:checked'));
+            practicasFiltradas = checkboxesPrac.map(cb => cb.value);
+
+            // 2. Filtrar
+            let productosFiltrados = productos.filter(p => {
+                // Filtro Región (necesita cruzar con productor)
+                const prod = productores.find(pr => pr.id === p.productorId);
+                const matchRegion = (regionFiltrada === 'todos') || (prod && prod.region === regionFiltrada);
+                
+                // Filtro Categoría
+                const matchCat = (categoriasFiltradas.length === 0) || (categoriasFiltradas.includes(p.categoria));
+                
+                // Filtro Práctica Productiva
+                const matchPrac = (practicasFiltradas.length === 0) || (practicasFiltradas.includes(p.practica));
+
+                // Solo productos verificados y activos son visibles
+                return matchRegion && matchCat && matchPrac && p.verificado;
+            });
+
+            // 3. Renderizar
+            renderizarProductos(productosFiltrados);
+        }
+
+        function resetearFiltros() {
+            document.querySelectorAll('input[name="filtro-region"]').forEach(radio => {
+                if(radio.value === 'todos') radio.checked = true;
+            });
+            document.querySelectorAll('.filtro-practica').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.filtro-categoria-checkbox').forEach(cb => cb.checked = false);
+            
+            regionFiltrada = "todos";
+            categoriasFiltradas = [];
+            practicasFiltradas = [];
+            
+            aplicarFiltros();
+        }
+
+        function enviarNegociacion(event, productorId, productoId) {
+            event.preventDefault();
+            
+            const comercio = document.getElementById('neg-comercio').value;
+            const asunto = document.getElementById('neg-asunto').value;
+            const correo = document.getElementById('neg-correo').value;
+            const telefono = document.getElementById('neg-telefono').value;
+            const mensaje = document.getElementById('neg-mensaje').value;
+
+            const nuevaNeg = {
+                id: `NEG-${Math.floor(Math.random() * 900) + 100}`,
+                fecha: new Date().toISOString().split('T')[0],
+                comercio: comercio,
+                correo: correo,
+                telefono: telefono,
+                productorId: productorId,
+                productoId: productoId,
+                asunto: asunto,
+                mensaje: mensaje
+            };
+
+            negociaciones.unshift(nuevaNeg);
+            renderizarBuzonNegociaciones();
+
+            const form = document.getElementById('form-contacto-directo');
+            form.innerHTML = `
+                <div class="text-center py-8 bg-agrogreen-50 border border-agrogreen-200 rounded-xl animate-scaleUp">
+                    <i data-lucide="check-circle" class="w-12 h-12 text-agrogreen-600 mx-auto mb-3"></i>
+                    <h5 class="text-lg font-bold text-agrogreen-900">¡Mensaje de Negociación Enviado!</h5>
+                    <p class="text-xs text-gray-500 max-w-sm mx-auto mt-1">Tu solicitud ha sido transmitida de manera directa y segura al buzón del productor. Se te responderá al correo: <strong>${correo}</strong>.</p>
+                    <button type="button" onclick="changeTab('catalogo')" class="mt-4 bg-white border text-xs font-semibold px-4 py-2 rounded-lg hover:bg-gray-50 text-gray-700">Volver al Catálogo</button>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function seleccionarRegion(region) {
+            regionFiltrada = region;
+            
+            // Sincronizar radio buttons del catálogo
+            if (region === 'Baja California') {
+                document.getElementById('radio-baja').checked = true;
+            } else if (region === 'Sonora') {
+                document.getElementById('radio-sonora').checked = true;
+            }
+            
+            aplicarFiltros();
+            changeTab('catalogo');
+        }
+
+    </script>
+</body>
+</html>
